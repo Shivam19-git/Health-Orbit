@@ -1,7 +1,6 @@
 const express = require('express')
 const verifyToken = require('../middlewares/authMiddleware')
-const authorizeRole = require('../middlewares/roleMiddleware')
-
+const {authorizeRole} = require('../middlewares/roleMiddleware')
 const router = express.Router()
 
 // only admin can access
