@@ -7,19 +7,19 @@ const router = express.Router()
 
 // Assign role to a user
 router.put('/assign-role', verifyToken, authorizeSuperAdmin, async (req, res) => {
-    const { username, role } = req.body 
+    const { email, role } = req.body 
     if(!['user', 'admin','coach','superadmin'].includes(role)){
         return res.status(400).json({message : "Invalid Role"})
     }
     try{
-        const user = await User.findOne({username})
+        const user = await User.findOne({email})
         if(!user){
             return res.status(404).json({message : "User not found"})
         }
         user.role = role
         await user.save()
         res.status(200).json({
-            message : `Role of ${username} is updated to ${role}`
+            message : `Role of ${email} is updated to ${role}`
         })
     }catch(error){
         console.error(error)
