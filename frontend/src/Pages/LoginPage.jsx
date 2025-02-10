@@ -47,7 +47,7 @@ const LoginPage = () => {
                             className="border border-gray-300 p-3 mb-4 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             required
                         />
-                        <h6>New User ? <Link to="/reg</div>ister" className="text-blue-500 hover:underline">Register here</Link></h6><br/>
+                        <h6>New User ? <Link to="/register" className="text-blue-500 hover:underline">Register here</Link></h6><br/>
                         <button
                             type="submit"
                             className="bg-blue-500 text-white px-4 py-2 rounded w-full hover:bg-blue-600 transition duration-300"
