@@ -54,4 +54,20 @@ const login = async (req, res) => {
     }
 };
 
-module.exports = { register, login };
+const logout = (req, res) => {
+    try {
+        // Redis can be used for Blacklisting the token 
+        // simple approach
+        res.clearCookie('token')
+        .json({ message: "Logged out" })
+        .status(200);
+        
+    } catch (error) {
+        res.status(500)
+        .json({ 
+            message: "Error in user logout", error: error.message 
+        })
+    }
+};
+
+module.exports = { register, login, logout };
