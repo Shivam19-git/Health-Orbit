@@ -23,11 +23,9 @@ const LoginPage = () => {
 
     return (
         <>
-            <div>
-                <BeforeLoginNavBar />
-            </div>
-            <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
-                <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+            <BeforeLoginNavBar />
+            <div className="flex flex-col items-center justify-center min-h-screen bg-[#f8f9fa]">
+                <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md border border-gray-200">
                     <h2 className="text-4xl font-bold mb-6 text-center text-gray-800">Login</h2>
                     {error && <p className="text-red-500 mb-4">{error}</p>}
                     <form onSubmit={handleLogin}>
@@ -47,10 +45,13 @@ const LoginPage = () => {
                             className="border border-gray-300 p-3 mb-4 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             required
                         />
-                        <h6>New User ? <Link to="/register" className="text-blue-500 hover:underline">Register here</Link></h6><br/>
+                        <p className="text-gray-600 text-sm">
+                            New User? <Link to="/register" className="text-blue-500 hover:underline">Register here</Link>
+                        </p>
+                        <br />
                         <button
                             type="submit"
-                            className="bg-blue-500 text-white px-4 py-2 rounded w-full hover:bg-blue-600 transition duration-300"
+                            className="bg-blue-500 text-white px-4 py-2 rounded w-full hover:bg-blue-600 transition duration-300 cursor-pointer"
                         >
                             Login
                         </button>
