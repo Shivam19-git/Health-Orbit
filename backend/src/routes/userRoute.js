@@ -1,21 +1,26 @@
-const express = require('express')
-const verifyToken = require('../middlewares/authMiddleware')
-const {authorizeRole} = require('../middlewares/roleMiddleware')
-const router = express.Router()
+const express = require('express');
+const verifyToken = require('../middlewares/authMiddleware');
+const authorizeRole = require('../middlewares/roleMiddleware');
 
-// only admin can access
-router.get('/admin', verifyToken, (req, res) => {
-    res.send('Admin Page')
-})
+const router = express.Router();
 
-// both admin and manager can access 
-router.get('/coach', verifyToken, (req, res) => {
-    res.send('Coach Page')
-})
+router.use(verifyToken);
 
-// all can access this route
-router.get('/user', verifyToken, (req, res) => {
-    res.send('User Page')
-})
+// User-specific routes
+router.get('/user', (req, res) => {
+    res.send('User Page');
+});
 
-module.exports = router
+// Coach-specific routes
+router.use(authorizeRole('coach', 'admin'));
+router.get('/coach', (req, res) => {
+    res.send('Coach Page');
+});
+
+// Admin-specific routes
+router.use(authorizeRole('admin'));
+router.get('/admin', (req, res) => {
+    res.send('Admin Page');
+});
+
+module.exports = router;
