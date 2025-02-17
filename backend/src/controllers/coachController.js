@@ -4,7 +4,11 @@ const jwt = require('jsonwebtoken')
 
 const registerCoach = async (req, res) => {
     try {
-        const {name, email, password, certificateURL} = req.body
+        const {name, email, password } = req.body
+        
+        if (!req.file) {
+            return res.status(400).json({ message: "Certificate file is required" })
+        }
 
         const existingCoach = await Coach.findOne({email})
         if(existingCoach){
@@ -53,6 +57,7 @@ const loginCoach = async (req, res) => {
         const token = jwt.sign({
             id : coach._id,
             role : "coach",
+            email : coach.email
         },process.env.JWT_SECRET, {expiresIn : '1h'})
 
         res.cookie('token', token, {httpOnly : true}).json({message : "Coach logged in successfully"})
@@ -64,7 +69,10 @@ const loginCoach = async (req, res) => {
 
 const logoutCoach = (req, res) => {
     try {
-        res.clearCookie('token').json({ message: "Coach logged out successfully" }).status(200)
+        if (!req.cookies.token) {
+            return res.status(400).json({ message: "No token found" })
+        }
+        res.clearCookie('token').status(200).json({ message: "Coach logged out successfully" })
     } catch (error) {
         res.status(500).json({ message: "Error in coach logout", error: error.message })
     }

@@ -16,8 +16,8 @@ app.use(express.json())
 
 
 app.use('/api/auth/user', authRoute)
-app.use('/api/admin', adminRoutes)
 app.use('/api/coach', coachRoutes)
+app.use('/api/admin', adminRoutes)
 
 
 

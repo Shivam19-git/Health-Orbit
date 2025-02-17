@@ -1,4 +1,37 @@
 const Coach = require('../models/coachModel')
+const bcrypt = require('bcryptjs')
+const Admin = require('../models/adminModel')
+const jwt = require('jsonwebtoken')
+
+
+const loginAdmin = async (req, res) => {
+    try {
+        
+        const {username, password} = req.body
+
+        const admin = await Admin.findOne({username})
+        if(!admin){
+            return res.status(400).json({message : "Admin not found"})
+        }
+        
+        const isMatch = await bcrypt.compare(password, admin.password)
+        if(!isMatch){
+            return res.status(400).json({message : "Invalid credentials"})
+        }
+
+        //Generate token for admin
+        const token = jwt.sign({
+            id : admin._id,
+            role : "admin",
+            username : admin.username
+        }, process.env.JWT_SECRET, {expiresIn : '1h'})
+
+        res.status(200).json({ message: "Logged in successfully", token })
+
+    } catch (error) {
+        res.status(500).json({ message: "Error in admin login", error: error.message })
+    }
+}
 
 const getPendingCoaches = async (req, res) => {
     try{
@@ -44,4 +77,4 @@ const rejectCoach = async (req, res) => {
       }
 }
 
-module.exports = {getPendingCoaches, approveCoach, rejectCoach}
+module.exports = {getPendingCoaches, approveCoach, rejectCoach , loginAdmin}

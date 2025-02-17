@@ -7,6 +7,7 @@ const authorizeRole = require('../middlewares/roleMiddleware')
 const router = express.Router()
 
 router.post('/register', upload.single('certificate'), registerCoach)
+
 router.post('/login', loginCoach)
 router.post('/logout', logoutCoach)
 

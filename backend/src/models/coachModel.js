@@ -16,7 +16,6 @@ const coachScheme = new mongoose.Schema({
     },
     role:{
         type : String,
-        required : true,
         default : 'coach'
     },
     certificateURL :{

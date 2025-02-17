@@ -1,15 +1,20 @@
-const express = require('express');
-const { getPendingCoaches, approveCoach, rejectCoach } = require('../controllers/adminController');
-const verifyToken = require('../middlewares/authMiddleware');
-const authorizeRole = require('../middlewares/roleMiddleware');
+const express = require('express')
+const { getPendingCoaches, approveCoach, rejectCoach, loginAdmin } = require('../controllers/adminController')
+const authMiddleware = require('../middlewares/authMiddleware')
+const roleMiddleware = require('../middlewares/roleMiddleware')
 
-const router = express.Router();
 
-router.use(verifyToken);
-router.use(authorizeRole('admin'));
+const router = express.Router()
 
-router.get('/pending-coaches', getPendingCoaches);
-router.put('/approve-coach/:coachId', approveCoach);
-router.delete('/reject-coach/:coachId', rejectCoach);
+router.post('/login', loginAdmin)
 
-module.exports = router;
+// Get all pending coaches (requires admin role)
+router.get('/pending-coaches', authMiddleware, roleMiddleware('admin'), getPendingCoaches)
+
+// Approve a coach (requires admin role)
+router.put('/approve-coach/:coachId', authMiddleware, roleMiddleware('admin'), approveCoach)
+
+// Reject a coach (requires admin role)
+router.delete('/reject-coach/:coachId', authMiddleware, roleMiddleware('admin'), rejectCoach)
+
+module.exports = router
