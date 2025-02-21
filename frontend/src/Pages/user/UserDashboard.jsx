@@ -1,5 +1,5 @@
 import React from 'react';
-import { AfterLoginNavBar } from '../Components/NavBar';
+import { AfterLoginNavBar } from '../../Components/NavBar';
 
 const UserDashboard = () => {
     return (

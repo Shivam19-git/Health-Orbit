@@ -1,10 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LandingPage from "./Pages/LandingPage";
-import LoginPage from "./Pages/LoginPage";
-import RegisterPage from "./Pages/RegisterPage";
+import LoginPage from "./Pages/user/LoginPage";
+import RegisterPage from "./Pages/user/RegisterPage";
 import BMICalculator from "./Components/BMICalculator";
-import UserDashboard from "./Pages/UserDashboard";
-import Coaches from "./Pages/Coaches"; // Import Coaches Page
+import UserDashboard from "./Pages/user/UserDashboard";
+import AdminLogin from "./Pages/admin/AdminLogin";
+import PendingCoach from "./Pages/admin/PendingCoaches";
+import AdminDashboard from "./Pages/admin/AdminDashboard";
 
 function App() {
   return (
@@ -15,7 +17,9 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/bmi-calculator" element={<BMICalculator />} />
         <Route path="/dashboard" element={<UserDashboard />} />
-        <Route path="/coaches" element={<Coaches />} />  {/* Added Coaches Route */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/pending-coaches" element={<PendingCoach />} />
       </Routes>
     
   );

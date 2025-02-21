@@ -33,7 +33,7 @@ const LandingPage = () => {
                 </div>
                 <div className="bg-white p-6 rounded-lg shadow-md text-center">
                     <img src="/images/support.jpg" alt="24/7 Support" className="w-full h-40 object-cover rounded-md mb-4" />
-                    <h2 className="text-2xl font-semibold text-gray-800">24/7 Support</h2>
+                    <h2 className="text-2xl font-semibold text-gray-800">Sustainable Habits </h2>
                     <p className="mt-2 text-gray-600">Our team is available round the clock to help you stay motivated and on track.</p>
                 </div>
             </div>
