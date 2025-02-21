@@ -60,7 +60,7 @@ const loginCoach = async (req, res) => {
             email : coach.email
         },process.env.JWT_SECRET, {expiresIn : '1h'})
 
-        res.cookie('token', token, {httpOnly : true}).json({message : "Coach logged in successfully"})
+        res.cookie('token', token, {httpOnly : true}).json({message : "Coach logged in successfully", token : token})
 
     } catch (error) {
         res.status(500).json({ message: "Error in coach login", error: error.message })
