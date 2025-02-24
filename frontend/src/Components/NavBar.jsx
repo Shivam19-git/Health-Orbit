@@ -9,7 +9,7 @@ const BeforeLoginNavBar = () => {
             </Link>
 
             <div className="space-x-6">
-                <Link to="/coach" className="text-black font-semibold text-lg hover:text-gray-800 transition duration-300">Become a Coach</Link>
+                <Link to="/coach/register" className="text-black font-semibold text-lg hover:text-gray-800 transition duration-300">Become a Coach</Link>
                 <Link to="/login" className="text-black font-semibold text-lg hover:text-gray-800 transition duration-300">Login</Link>
                 <Link to="/register" className="text-black font-semibold text-lg hover:text-gray-800 transition duration-300">Register</Link>
             </div>
