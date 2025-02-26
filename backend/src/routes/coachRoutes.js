@@ -14,6 +14,6 @@ router.post('/logout', logoutCoach)
 router.use(verifyToken)
 router.use(authorizeRole('coach'))
 
-// Add coach-specific routes here
+// Add coach-specific routes here 
 
 module.exports = router
