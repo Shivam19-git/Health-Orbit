@@ -15,7 +15,7 @@ const RegisterPage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        document.body.classList.add("overflow-hidden"); // Prevent scrolling
+        document.body.classList.add("overflow-hidden");
         return () => document.body.classList.remove("overflow-hidden");
     }, []);
 
@@ -47,85 +47,106 @@ const RegisterPage = () => {
     };
 
     return (
-        <>
-            {/* Fixed Navbar with Shadow */}
-            <div className="fixed top-0 left-0 w-full bg-white shadow-md z-10">
+        <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-200">
+            <div className="fixed top-0 left-0 w-full z-10">
                 <BeforeLoginNavBar />
             </div>
 
-            {/* Full Page Wrapper */}
-            <div className="flex items-center justify-center min-h-screen bg-white pt-16">
-                <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm border border-gray-200">
-                    <h2 className="text-3xl font-bold text-center text-black mb-4">Register</h2>
-                    {error && <p className="text-red-500 text-center mb-3">{error}</p>}
+            <div className="flex items-center justify-center min-h-screen pt-16 px-4">
+                <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md border border-gray-100 transform transition duration-300 hover:shadow-2xl">
+                    <h2 className="text-4xl font-bold text-center text-gray-800 mb-6">Join Health Orbit</h2>
+                    {error && (
+                        <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded">
+                            <p className="text-red-700">{error}</p>
+                        </div>
+                    )}
 
-                    <form onSubmit={handleRegister} className="space-y-4">
-                        <input
-                            type="text"
-                            placeholder="Full Name"
-                            value={fullName}
-                            onChange={(e) => setFullName(e.target.value)}
-                            className="border border-gray-400 bg-gray-100 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-gray-800"
-                            required
-                        />
-                        <input
-                            type="email"
-                            placeholder="Email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="border border-gray-400 bg-gray-100 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-gray-800"
-                            required
-                        />
-                        <div className="relative">
+                    <form onSubmit={handleRegister} className="space-y-5">
+                        <div>
+                            <label className="block text-gray-700 text-sm font-medium mb-2">Full Name</label>
                             <input
-                                type={showPassword ? "text" : "password"}
-                                placeholder="Password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="border border-gray-400 bg-gray-100 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-gray-800"
+                                type="text"
+                                placeholder="John Doe"
+                                value={fullName}
+                                onChange={(e) => setFullName(e.target.value)}
+                                className="border border-gray-300 bg-gray-50 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
                                 required
                             />
-                            <button
-                                type="button"
-                                className="absolute right-3 top-3 text-gray-600"
-                                onClick={togglePasswordVisibility}
-                            >
-                                {showPassword ? <FaEyeSlash /> : <FaEye />}
-                            </button>
                         </div>
-                        <div className="relative">
+                        
+                        <div>
+                            <label className="block text-gray-700 text-sm font-medium mb-2">Email Address</label>
                             <input
-                                type={showConfirmPassword ? "text" : "password"}
-                                placeholder="Retype Password"
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                className="border border-gray-400 bg-gray-100 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-gray-800"
+                                type="email"
+                                placeholder="you@example.com"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="border border-gray-300 bg-gray-50 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
                                 required
                             />
-                            <button
-                                type="button"
-                                className="absolute right-3 top-3 text-gray-600"
-                                onClick={toggleConfirmPasswordVisibility}
-                            >
-                                {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-                            </button>
                         </div>
-    
-
-                        <p className="text-gray-700 text-sm text-center">
-                            Already Registered? <Link to="/login" className="text-black font-semibold hover:underline">Login here</Link>
-                        </p>
+                        
+                        <div>
+                            <label className="block text-gray-700 text-sm font-medium mb-2">Password</label>
+                            <div className="relative">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="••••••••"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="border border-gray-300 bg-gray-50 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition"
+                                    onClick={togglePasswordVisibility}
+                                >
+                                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label className="block text-gray-700 text-sm font-medium mb-2">Confirm Password</label>
+                            <div className="relative">
+                                <input
+                                    type={showConfirmPassword ? "text" : "password"}
+                                    placeholder="••••••••"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    className="border border-gray-300 bg-gray-50 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition"
+                                    onClick={toggleConfirmPasswordVisibility}
+                                >
+                                    {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                                </button>
+                            </div>
+                        </div>
 
                         <button
                             type="submit"
-                            className="bg-blue-500 text-white px-4 py-2 rounded w-full hover:bg-blue-600 hover:shadow-2xl transition duration-300 cursor-pointer"
+                            className="bg-blue-600 text-white w-full py-3 rounded-lg hover:bg-blue-700 transform hover:scale-[1.02] transition duration-300 shadow-md hover:shadow-lg font-medium mt-6"
                         >
-                            Register
+                            Create Account
                         </button>
+                        
+                        <div className="text-center mt-6">
+                            <p className="text-gray-600">
+                                Already have an account?{" "}
+                                <Link to="/login" className="text-blue-600 font-semibold hover:text-blue-800 transition">
+                                    Sign in
+                                </Link>
+                            </p>
+                        </div>
                     </form>
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 
