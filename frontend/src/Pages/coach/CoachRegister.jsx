@@ -31,10 +31,13 @@ const CoachRegister = () => {
 
     return (
         <>
-            <BeforeLoginNavBar />
+            {/* Fixed Navbar with Shadow */}
+            <div className="fixed top-0 left-0 w-full bg-white shadow-md z-10">
+                <BeforeLoginNavBar />
+            </div>
 
-            <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4">
-                <div className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
+            <div className="flex items-center justify-center min-h-screen bg-white pt-16">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm border border-gray-200">
                     <h1 className="text-2xl font-bold text-center mb-6 text-gray-800">
                         Become a Coach
                     </h1>
@@ -73,12 +76,12 @@ const CoachRegister = () => {
                                 type="file"
                                 onChange={(e) => setCertificate(e.target.files[0])}
                                 required
-                                className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 file:cursor-pointer file:border-none file:bg-blue-500 file:text-white file:px-4 file:py-2 file:rounded-md"
+                                className="w-full p-2 border border-gray-300 rounded-lg bg-white file:cursor-pointer file:border-none file:bg-blue-500 file:text-white file:px-4 file:py-2 file:rounded-md"
                             />
                         </div>
                         <button
                             type="submit"
-                            className="w-full bg-blue-600 text-white p-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300"
+                            className="w-full bg-blue-500 text-white p-3 rounded-lg font-semibold hover:bg-blue-600 hover:shadow-2xl hover:cursor-pointer transition duration-300"
                         >
                             Register
                         </button>
