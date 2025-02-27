@@ -1,6 +1,8 @@
 import axios from "axios";
+import dotenv from "dotenv";
+dotenv.config();
 
-const API_URL = "http://localhost:6060/api"; 
+const API_URL = process.env.BACKEND_API_URL;
 
 // Set authorization token in headers
 const setAuthToken = (token) => {
