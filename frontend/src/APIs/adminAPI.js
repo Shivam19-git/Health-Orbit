@@ -1,8 +1,6 @@
 import axios from "axios";
-import dotenv from "dotenv";
-dotenv.config();
 
-const API_URL = process.env.BACKEND_API_URL;
+const API_URL = import.meta.env.VITE_BACKEND_API_URL;
 
 // set auth token in headers
 const setAuthToken = (token) => {

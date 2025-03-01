@@ -38,7 +38,7 @@ const RegisterPage = () => {
         }
 
         try {
-            await axios.post("http://localhost:6060/api/auth/register", { fullName, email, password });
+            await axios.post("http://localhost:6060/api/auth/user/register", { fullName, email, password });
             console.log("Registration Successful");
             navigate("/login");
         } catch (error) {

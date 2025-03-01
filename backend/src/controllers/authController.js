@@ -4,7 +4,7 @@ const User = require('../models/userModel')
 
 const register = async (req, res) => {
     try {
-        const { email, password, role } = req.body
+        const { fullName, email, password, role } = req.body
 
         // Check if the email already exists
         const existingUser = await User.findOne({ email })
@@ -15,6 +15,7 @@ const register = async (req, res) => {
         const hashPassword = await bcrypt.hash(password, 10)
 
         const newUser = new User({
+            fullname: fullName,
             email,
             password: hashPassword,
             role
@@ -46,7 +47,7 @@ const login = async (req, res) => {
             role: user.role
         }, process.env.JWT_SECRET, { expiresIn: '1h' })
 
-        res.status(200).json({ token })
+        res.status(200).json({ token, fullName: user.fullname })
 
     } catch (error) {
         res.status(500).json({ message: "Error in user login", error: error.message })

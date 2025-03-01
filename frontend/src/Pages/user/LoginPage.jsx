@@ -21,8 +21,9 @@ const LoginPage = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post("http://localhost:6060/api/auth/login", { email, password });
+            const response = await axios.post("http://localhost:6060/api/auth/user/login", { email, password });
             localStorage.setItem("authToken", response.data.token);
+            localStorage.setItem("fullName", response.data.fullName);
             console.log("Login Successful");
             navigate("/dashboard");
         } catch (error) {
@@ -76,14 +77,6 @@ const LoginPage = () => {
                                 >
                                     {showPassword ? <FaEyeSlash /> : <FaEye />}
                                 </button>
-                            </div>
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                            <div className="text-sm">
-                                <Link to="/forgot-password" className="text-blue-600 hover:text-blue-800 transition">
-                                    Forgot your password?
-                                </Link>
                             </div>
                         </div>
 
