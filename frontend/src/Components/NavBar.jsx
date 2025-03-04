@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FaUser, FaSignOutAlt, FaCog } from 'react-icons/fa';
 import Logout from './Logout';
 
-const BeforeLoginNavBar = () => {
+export const BeforeLoginNavBar = () => {
     const [isOpen, setIsOpen] = useState(false);
     
     return (
@@ -210,3 +210,4 @@ export const AfterLoginNavBar = () => {
         </nav>
     );
 };
+
