@@ -10,7 +10,7 @@ const Logout = () => {
             localStorage.removeItem('token')
             navigate('/login')
         } catch (error) {
-            console.log("Logout Failed", Error)
+            console.log("Logout Failed", error)
         }
     }
 

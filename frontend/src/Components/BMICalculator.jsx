@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+/* eslint-disable react/no-unescaped-entities */
+import  { useState } from "react";
 import { BeforeLoginNavBar } from "./NavBar";
 import { Link } from "react-router-dom";
 

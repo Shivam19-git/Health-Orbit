@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaUser, FaSignOutAlt, FaCog } from 'react-icons/fa';
-import Logout from './Logout';
+import { FaSignOutAlt,  } from 'react-icons/fa';
+
 
 export const BeforeLoginNavBar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -128,14 +128,13 @@ export const AfterLoginNavBar = () => {
     return (
         <nav className="bg-white shadow-md py-4">
             <div className="container mx-auto px-6 flex justify-between items-center">
-                <Link to="/dashboard" className="text-2xl font-bold text-blue-600">Health Orbit</Link>
+                <Link to="/" className="flex items-center space-x-3">
+                    <span className="text-2xl font-bold text-gray-800">
+                        Health<span className="text-blue-600">Orbit</span>
+                    </span>
+                </Link>
                 
                 <div className="hidden md:flex items-center space-x-8">
-                    <Link to="/dashboard" className="text-gray-700 hover:text-blue-600 font-medium">Dashboard</Link>
-                    <Link to="/workouts" className="text-gray-700 hover:text-blue-600 font-medium">Workouts</Link>
-                    <Link to="/nutrition" className="text-gray-700 hover:text-blue-600 font-medium">Nutrition</Link>
-                    <Link to="/progress" className="text-gray-700 hover:text-blue-600 font-medium">Progress</Link>
-                    
                     {/* User Profile Dropdown */}
                     <div className="relative">
                         <button 
