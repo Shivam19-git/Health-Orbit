@@ -121,7 +121,7 @@ const BMICalculator = () => {
                                         
                                         {/* BMI Meter */}
                                         <div className="mb-10">
-                                            <div className="relative h-8 bg-gradient-to-r from-blue-400 via-green-400 via-yellow-400 to-red-400 rounded-lg mb-2">
+                                            <div className="relative h-8 bg-gradient-to-r from-blue-400 via-yellow-400 to-red-400 rounded-lg mb-2">
                                                 <div 
                                                     className="absolute top-full w-0.5 h-4 bg-black transform -translate-x-1/2"
                                                     style={{ left: getBmiPosition() }}
