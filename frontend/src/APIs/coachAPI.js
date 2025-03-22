@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import axios from "axios";
 
 const API_URL = import.meta.env.VITE_BACKEND_API_URL;
@@ -23,6 +24,10 @@ export const registerCoach = async (formData) => {
 // Coach Login
 export const loginCoach = async (email, password) => {
   const response = await axios.post(`${API_URL}/coach/login`, { email, password });
+  const { token, coach } = response.data; 
+  localStorage.setItem("coachToken", token);
+  localStorage.setItem("coachId", coach.id);
+  localStorage.setItem("coachFullName", coach.name); // Store the full name
   return response.data;
 };
 

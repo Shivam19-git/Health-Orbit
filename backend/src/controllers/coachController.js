@@ -36,34 +36,39 @@ const registerCoach = async (req, res) => {
 
 const loginCoach = async (req, res) => {
     try {
-        
-        const {email, password} = req.body
-        const coach = await Coach.findOne({email})
+        const { email, password } = req.body;
+        const coach = await Coach.findOne({ email });
 
-        if(!coach){
-            return res.status(400).json({message : "Coach not found"})
-        }   
-        if(!coach.isApproved){
-            return res.status(400).json({message : "Coach not approved yet"})
+        if (!coach) {
+            return res.status(400).json({ message: "Coach not found" });
+        }
+        if (!coach.isApproved) {
+            return res.status(400).json({ message: "Coach not approved yet" });
         }
 
         // Password check
-        const isMatch = await bcrypt.compare(password, coach.password)
-        
-        if(!isMatch){
-            return res.status(400).json({message : "Invalid credentials"})
+        const isMatch = await bcrypt.compare(password, coach.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: "Invalid credentials" });
         }
 
-        const token = jwt.sign({
-            id : coach._id,
-            role : "coach",
-            email : coach.email
-        },process.env.JWT_SECRET, {expiresIn : '1h'})
+        const token = jwt.sign(
+            {
+                id: coach._id,
+                role: "coach",
+                email: coach.email,
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: "1h" }
+        );
 
-        res.cookie('token', token, {httpOnly : true}).json({message : "Coach logged in successfully", token : token})
-
+        res.cookie("token", token, { httpOnly: true }).json({
+            message: "Coach logged in successfully",
+            token: token,
+            coach: { id: coach._id, name: coach.name },
+        });
     } catch (error) {
-        res.status(500).json({ message: "Error in coach login", error: error.message })
+        res.status(500).json({ message: "Error in coach login", error: error.message });
     }
 }
 
