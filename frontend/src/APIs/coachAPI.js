@@ -97,3 +97,23 @@ export const fetchCoachDetails = async () => {
   }
 };
 
+// Fetch pending client requests
+export const fetchPendingRequests = async () => {
+  try {
+    const token = localStorage.getItem("coachToken");
+    if (!token) {
+      throw new Error("No token found. Please log in again.");
+    }
+
+    const response = await axios.get(`${API_URL}/coach/pending-requests`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching pending requests:", error);
+    throw error;
+  }
+};
+
