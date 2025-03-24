@@ -59,7 +59,7 @@ const loginCoach = async (req, res) => {
                 email: coach.email,
             },
             process.env.JWT_SECRET,
-            { expiresIn: "1h" }
+            { expiresIn: "7d" }
         );
 
         res.cookie("token", token, { httpOnly: true }).json({
@@ -83,4 +83,40 @@ const logoutCoach = (req, res) => {
     }
 }
 
-module.exports = {registerCoach, loginCoach, logoutCoach}
+const updateCoachDetails = async (req, res) => {
+    try {
+        const { specialization, experience, bio } = req.body;
+        const coachId = req.user.id;
+
+        const coach = await Coach.findById(coachId);
+        if (!coach) {
+            return res.status(404).json({ message: "Coach not found" });
+        }
+
+        // Update fields
+        if (specialization) coach.specialization = specialization;
+        if (experience) coach.experience = experience;
+        if (bio) coach.bio = bio;
+
+        await coach.save();
+
+        res.status(200).json({ message: "Coach details updated successfully", coach });
+    } catch (error) {
+        res.status(500).json({ message: "Error updating coach details", error: error.message });
+    }
+};
+
+const getCoachDetails = async (req, res) => {
+    try {
+        const coachId = req.user.id;
+        const coach = await Coach.findById(coachId).select('-password'); // Exclude password
+        if (!coach) {
+            return res.status(404).json({ message: "Coach not found" });
+        }
+        res.status(200).json(coach);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching coach details", error: error.message });
+    }
+};
+
+module.exports = { registerCoach, loginCoach, logoutCoach, updateCoachDetails, getCoachDetails };

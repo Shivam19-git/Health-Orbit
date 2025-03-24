@@ -6,8 +6,7 @@ import BMICalculator from "./Tools/BMICalculator";
 import DietTool from "./Tools/DietTool";
 import WorkoutPrograms from "./Tools/WorkoutPrograms";
 import Insights from "./Tools/Insights";
-
-
+import CoachesList from "./Tools/CoachesList";
 
 const UserDashboard = () => {
   const [fullName, setFullName] = useState("");
@@ -22,6 +21,27 @@ const UserDashboard = () => {
 
   const categories = ["Breakfast", "Lunch", "Snacks", "Dinner"];
 
+  // Fetch user's full name from localStorage or backend
+  useEffect(() => {
+    const storedFullName = localStorage.getItem("fullName");
+    if (storedFullName) {
+      setFullName(storedFullName);
+    }
+
+    const storedDietData = JSON.parse(localStorage.getItem("dietData")) || {};
+    setDietData(storedDietData);
+  }, []);
+
+  // Save diet data to localStorage whenever it changes
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      localStorage.setItem("dietData", JSON.stringify(dietData));
+    }, 500); // Debounce by 500ms
+
+    return () => clearTimeout(timeout);
+  }, [dietData]);
+
+  // Calculate BMI
   const calculateBMI = () => {
     if (weight && height) {
       const heightInMeters = height / 100;
@@ -38,6 +58,7 @@ const UserDashboard = () => {
     return "Obese";
   };
 
+  // Calculate insights for the last 7 days
   const calculateInsights = () => {
     const lastWeekDates = Array.from({ length: 7 }, (_, i) => {
       const date = new Date();
@@ -52,20 +73,6 @@ const UserDashboard = () => {
 
     setInsights(weeklyData);
   };
-
-  useEffect(() => {
-    const storedFullName = localStorage.getItem("fullName");
-    if (storedFullName) {
-      setFullName(storedFullName);
-    }
-
-    const storedDietData = JSON.parse(localStorage.getItem("dietData")) || {};
-    setDietData(storedDietData);
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("dietData", JSON.stringify(dietData));
-  }, [dietData]);
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -91,9 +98,7 @@ const UserDashboard = () => {
                 <p>Select an option from the sidebar to get started</p>
               </div>
             ) : selectedOption === "bmi" ? (
-
-              <BMICalculator/>
-            
+              <BMICalculator />
             ) : selectedOption === "diet" ? (
               <DietTool
                 dietData={dietData}
@@ -105,6 +110,8 @@ const UserDashboard = () => {
               <WorkoutPrograms />
             ) : selectedOption === "insights" ? (
               <Insights insights={insights} categories={categories} />
+            ) : selectedOption === "coaches" ? (
+              <CoachesList />
             ) : null}
           </div>
         </div>

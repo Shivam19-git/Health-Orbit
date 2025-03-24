@@ -23,11 +23,12 @@ const LoginPage = () => {
         try {
             const response = await axios.post("http://localhost:6060/api/auth/user/login", { email, password });
             localStorage.setItem("authToken", response.data.token);
+            localStorage.setItem("token",response.token)
             localStorage.setItem("fullName", response.data.fullName);
             console.log("Login Successful");
             navigate("/dashboard");
         } catch (error) {
-            setError("Invalid Credentials");
+            setError("Invalid Credentials",error);
         }
     };
 

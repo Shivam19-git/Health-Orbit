@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-const Sidebar = ({ selectedOption, setSelectedOption, calculateInsights }) => {
+const Sidebar = ({ selectedOption, setSelectedOption }) => {
   return (
     <div className="w-64 bg-white shadow-md rounded-lg h-fit">
       <div className="p-4 border-b border-gray-200">
@@ -9,46 +9,43 @@ const Sidebar = ({ selectedOption, setSelectedOption, calculateInsights }) => {
       <div className="p-2">
         <button
           className={`w-full text-left p-3 rounded-md transition ${
-            selectedOption === "bmi" ? "bg-indigo-100 text-indigo-800" : "hover:bg-gray-100"
+            selectedOption === "clients" ? "bg-indigo-100 text-indigo-800" : "hover:bg-gray-100"
           }`}
-          onClick={() => setSelectedOption("bmi")}
+          onClick={() => setSelectedOption("clients")}
         >
-          BMI Calculator
+          Clients
         </button>
         <button
           className={`w-full text-left p-3 rounded-md transition ${
-            selectedOption === "diet" ? "bg-indigo-100 text-indigo-800" : "hover:bg-gray-100"
+            selectedOption === "diet-plans" ? "bg-indigo-100 text-indigo-800" : "hover:bg-gray-100"
           }`}
-          onClick={() => setSelectedOption("diet")}
+          onClick={() => setSelectedOption("diet-plans")}
         >
-          Diet Tool
+          Diet Plans
         </button>
         <button
           className={`w-full text-left p-3 rounded-md transition ${
-            selectedOption === "workouts" ? "bg-indigo-100 text-indigo-800" : "hover:bg-gray-100"
+            selectedOption === "workout-plans" ? "bg-indigo-100 text-indigo-800" : "hover:bg-gray-100"
           }`}
-          onClick={() => setSelectedOption("workouts")}
+          onClick={() => setSelectedOption("workout-plans")}
         >
-          Workouts
+          Workout Plans
         </button>
         <button
           className={`w-full text-left p-3 rounded-md transition ${
-            selectedOption === "insights" ? "bg-indigo-100 text-indigo-800" : "hover:bg-gray-100"
+            selectedOption === "client-requests" ? "bg-indigo-100 text-indigo-800" : "hover:bg-gray-100"
           }`}
-          onClick={() => {
-            setSelectedOption("insights");
-            calculateInsights();
-          }}
+          onClick={() => setSelectedOption("client-requests")}
         >
-          Insights
+          Client Requests
         </button>
         <button
           className={`w-full text-left p-3 rounded-md transition ${
-            selectedOption === "coaches" ? "bg-indigo-100 text-indigo-800" : "hover:bg-gray-100"
+            selectedOption === "update-details" ? "bg-indigo-100 text-indigo-800" : "hover:bg-gray-100"
           }`}
-          onClick={() => setSelectedOption("coaches")}
+          onClick={() => setSelectedOption("update-details")}
         >
-          View Coaches
+          Update Details
         </button>
       </div>
     </div>
@@ -58,7 +55,6 @@ const Sidebar = ({ selectedOption, setSelectedOption, calculateInsights }) => {
 Sidebar.propTypes = {
   selectedOption: PropTypes.string,
   setSelectedOption: PropTypes.func.isRequired,
-  calculateInsights: PropTypes.func.isRequired,
 };
 
 export default Sidebar;

@@ -24,7 +24,7 @@ const loginAdmin = async (req, res) => {
             id : admin._id,
             role : "admin",
             username : admin.username
-        }, process.env.JWT_SECRET, {expiresIn : '1h'})
+        }, process.env.JWT_SECRET, {expiresIn : '7d'})
 
         res.status(200).json({ message: "Logged in successfully", token })
 
