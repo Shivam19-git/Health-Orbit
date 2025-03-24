@@ -117,3 +117,27 @@ export const fetchPendingRequests = async () => {
   }
 };
 
+// Send a join request to a coach
+export const sendJoinRequest = async (coachId) => {
+  try {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      throw new Error("No token found. Please log in again.");
+    }
+
+    const response = await axios.post(
+      `${API_URL}/user/join-coach/${coachId}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error sending join request:", error);
+    throw error;
+  }
+};
+

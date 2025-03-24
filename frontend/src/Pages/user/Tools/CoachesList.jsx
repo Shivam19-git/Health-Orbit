@@ -1,45 +1,64 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
-import { fetchAllCoaches } from "../../../APIs/coachAPI";
+import { fetchAllCoaches, sendJoinRequest } from "../../../APIs/coachAPI";
 
 const CoachesList = () => {
   const [coaches, setCoaches] = useState([]);
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [requestedCoaches, setRequestedCoaches] = useState([]); // Track requested coaches
 
-  // Function to fetch coaches
-  const fetchCoaches = async () => {
-    try {
-      setLoading(true);
-      const data = await fetchAllCoaches();
-      setCoaches(data);
-      setError("");
-    } catch (error) {
-      setError("Failed to fetch coaches. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Fetch coaches on component mount
   useEffect(() => {
+    const fetchCoaches = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchAllCoaches();
+        setCoaches(data);
+        setError("");
+
+        // Fetch requested coaches from backend or local state
+        const requested = data.filter((coach) => coach.isRequested); // Assuming backend sends `isRequested`
+        setRequestedCoaches(requested.map((coach) => coach._id));
+      } catch (err) {
+        setError("Failed to fetch coaches. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchCoaches();
   }, []);
 
+  const handleRequestCoach = async (coachId) => {
+    if (requestedCoaches.includes(coachId)) {
+      return; // Prevent duplicate requests
+    }
+
+    try {
+      await sendJoinRequest(coachId);
+      setSuccessMessage("Request sent successfully!");
+      setRequestedCoaches((prev) => [...prev, coachId]); // Mark coach as requested
+      setTimeout(() => setSuccessMessage(""), 3000); // Clear success message after 3 seconds
+    } catch (err) {
+      if (err.response && err.response.status === 400) {
+        // If the backend returns a "Request already sent" error
+        setRequestedCoaches((prev) => [...prev, coachId]); // Mark coach as requested
+        setError("You have already requested this coach.");
+      } else {
+        setError("Failed to send request. Please try again.");
+      }
+      setTimeout(() => setError(""), 3000); // Clear error message after 3 seconds
+    }
+  };
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-gray-800">Our Expert Coaches</h2>
-        <button
-          onClick={fetchCoaches}
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300"
-        >
-          Refresh
-        </button>
-      </div>
+      <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">Our Expert Coaches</h2>
 
       {loading && <p className="text-gray-600">Loading...</p>}
       {error && <p className="text-red-500">{error}</p>}
+      {successMessage && <p className="text-green-500">{successMessage}</p>}
 
       {!loading && coaches.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -118,32 +137,27 @@ const CoachesList = () => {
                     </p>
                   </div>
                 </div>
+
+                <div className="mt-6">
+                  <button
+                    onClick={() => handleRequestCoach(coach._id)}
+                    disabled={requestedCoaches.includes(coach._id)} // Disable button if already requested
+                    className={`w-full py-2 rounded-lg transition duration-300 focus:outline-none focus:ring-2 ${
+                      requestedCoaches.includes(coach._id)
+                        ? "bg-gray-400 text-white cursor-not-allowed"
+                        : "bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:opacity-90 focus:ring-blue-500 focus:ring-opacity-50"
+                    }`}
+                  >
+                    {requestedCoaches.includes(coach._id) ? "Requested" : "Request Coach"}
+                  </button>
+                </div>
               </div>
             </div>
           ))}
         </div>
       ) : (
         !loading && (
-          <div className="text-center py-12">
-            <svg
-              className="w-16 h-16 mx-auto text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              ></path>
-            </svg>
-            <p className="text-gray-600 mt-4 text-lg">
-              No coaches available at the moment.
-            </p>
-            <p className="text-gray-500 mt-2">Check back later for updates.</p>
-          </div>
+          <p className="text-gray-600 text-center">No coaches available at the moment.</p>
         )
       )}
     </div>

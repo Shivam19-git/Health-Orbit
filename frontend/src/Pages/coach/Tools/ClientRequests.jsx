@@ -7,26 +7,34 @@ const ClientRequests = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    const fetchRequests = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchPendingRequests();
-        setRequests(data);
-        setError("");
-      } catch (err) {
-        setError("Failed to fetch client requests. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchRequests = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchPendingRequests();
+      setRequests(data);
+      setError("");
+    } catch (err) {
+      setError("Failed to fetch client requests. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchRequests();
   }, []);
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <h2 className="text-2xl font-bold mb-4">Client Requests</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold">Client Requests</h2>
+        <button
+          onClick={fetchRequests}
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300"
+        >
+          Refresh
+        </button>
+      </div>
 
       {loading && <p className="text-gray-600">Loading...</p>}
       {error && <p className="text-red-500">{error}</p>}
