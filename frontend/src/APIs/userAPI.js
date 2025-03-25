@@ -58,5 +58,25 @@ export const fetchConnectedCoaches = async () => {
   }
 };
 
+// Fetch details of a specific coach
+export const fetchCoachDetails = async (coachId) => {
+  try {
+    const token = localStorage.getItem("authToken"); // Use authToken for user-related actions
+    if (!token) {
+      throw new Error("No token found. Please log in again.");
+    }
+
+    const response = await axios.get(`${API_URL}/user/coach/${coachId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data; // Return the coach details
+  } catch (error) {
+    console.error("Error fetching coach details:", error);
+    throw error;
+  }
+};
+
 // Add other user-related API functions here as needed
 

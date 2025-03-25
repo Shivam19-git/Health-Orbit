@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
-import { fetchConnectedCoaches } from "../../../APIs/userAPI";
+import { fetchConnectedCoaches, fetchCoachDetails } from "../../../APIs/userAPI";
 
 const MyCoaches = () => {
   const [coaches, setCoaches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [selectedCoach, setSelectedCoach] = useState(null); // State to store the selected coach
+  const [coachDetails, setCoachDetails] = useState(null); // State to store the selected coach's details
+  const [detailsLoading, setDetailsLoading] = useState(false); // Loading state for coach details
 
   const fetchCoaches = async () => {
     try {
@@ -12,21 +15,26 @@ const MyCoaches = () => {
 
       // Fetch connected coaches from the backend
       const connectedCoaches = await fetchConnectedCoaches();
-      console.log("Connected Coaches API Response:", connectedCoaches); // Debugging log
-
-      // Ensure unique coaches based on coachId
-      const uniqueCoaches = connectedCoaches.filter(
-        (coach, index, self) =>
-          index === self.findIndex((c) => c.coachId === coach.coachId)
-      );
-      console.log("Unique Coaches:", uniqueCoaches); // Debugging log
-
-      setCoaches(uniqueCoaches); // Update state with unique coaches
+      setCoaches(connectedCoaches);
     } catch (err) {
-      console.error("Error fetching connected coaches:", err); // Debugging log
       setError("Failed to fetch connected coaches. Please try again.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleViewContent = async (coach) => {
+    setSelectedCoach(coach); // Set the selected coach
+    setDetailsLoading(true); // Start loading coach details
+
+    try {
+      // Fetch the selected coach's details from the backend
+      const details = await fetchCoachDetails(coach.coachId);
+      setCoachDetails(details); // Update state with coach details
+    } catch (err) {
+      setCoachDetails(null);
+    } finally {
+      setDetailsLoading(false); // Stop loading coach details
     }
   };
 
@@ -35,50 +43,96 @@ const MyCoaches = () => {
   }, []);
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h2 className="text-2xl font-bold mb-4">My Coaches</h2>
-      {loading && <p className="text-gray-600">Loading...</p>}
-      {error && <p className="text-red-500">{error}</p>}
-      {!loading && coaches.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {coaches.map((coach) => (
-            <div
-              key={coach.coachId} // Use a unique key for each coach
-              className="bg-white rounded-xl shadow-lg overflow-hidden transform transition duration-300 hover:shadow-2xl hover:-translate-y-1"
-            >
-              <div className="relative">
-                <div className="bg-gradient-to-r from-blue-500 to-indigo-600 h-32"></div>
-                <img
-                  src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-                    coach.coachName
-                  )}&background=random&color=fff&size=128`}
-                  alt={`${coach.coachName}'s profile`}
-                  className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-24 h-24 rounded-full border-4 border-white shadow-md"
-                />
-              </div>
-              <div className="pt-16 px-6 pb-6">
-                <h3 className="text-xl font-bold text-center text-gray-800 mb-2">
-                  {coach.coachName}
-                </h3>
-                <p className="text-gray-600 text-center">{coach.coachEmail}</p>
-                <p className="text-gray-600 text-center">
-                  {coach.specialization || "N/A"} - {coach.experience || "N/A"} years
-                </p>
-                <p className="text-gray-600 text-center">{coach.bio || "No bio available"}</p>
-                <div className="mt-4">
+    <div className="p-6 bg-gray-100 min-h-screen grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* Left Sidebar */}
+      <div className="col-span-1">
+        <h2 className="text-2xl font-bold mb-4">My Coaches</h2>
+        {loading && <p>Loading...</p>}
+        {error && <p className="text-red-500">{error}</p>}
+        {!loading && coaches.length > 0 ? (
+          <div className="grid grid-cols-1 gap-4">
+            {coaches.map((coach) => (
+              <div key={coach.coachId} className="bg-white rounded-xl shadow-lg">
+                <div className="p-4">
+                  <h3 className="text-xl font-bold">{coach.coachName}</h3>
+                  <p>{coach.coachEmail}</p>
                   <button
-                    className="w-full py-2 rounded-lg bg-green-500 text-white hover:bg-green-600 transition duration-300"
+                    className="mt-2 bg-green-500 text-white px-4 py-2 rounded"
+                    onClick={() => handleViewContent(coach)}
                   >
                     View Content
                   </button>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        !loading && <p className="text-gray-600">No connected coaches found.</p>
-      )}
+            ))}
+          </div>
+        ) : (
+          <p>No connected coaches found.</p>
+        )}
+      </div>
+
+      {/* Center Div for Coach Details */}
+      <div className="col-span-2 bg-white rounded-xl shadow-lg p-6">
+        {detailsLoading ? (
+          <p>Loading coach details...</p>
+        ) : selectedCoach && coachDetails ? (
+          <div>
+            <h2 className="text-2xl font-bold">{coachDetails.name}</h2>
+            <p>Email: {coachDetails.email}</p>
+            <p>Specialization: {coachDetails.specialization}</p>
+            <p>Experience: {coachDetails.experience} years</p>
+            <p>Bio: {coachDetails.bio}</p>
+            <h3 className="text-xl font-bold mt-4">Workouts</h3>
+            {coachDetails.workouts.length > 0 ? (
+              coachDetails.workouts.map((workout, index) => (
+                <div key={index}>
+                  <h4>{workout.name}</h4>
+                  <iframe
+                    src={`https://www.youtube.com/embed/${workout.videoId}`}
+                    title={workout.name}
+                    frameBorder="0"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+              ))
+            ) : (
+              <p>No workouts available.</p>
+            )}
+            <h3 className="text-xl font-bold mt-4">Diet Plans</h3>
+            {coachDetails.dietPlans.length > 0 ? (
+              coachDetails.dietPlans.map((plan, index) => (
+                <div key={plan._id} className="mb-4">
+                  <h4 className="font-bold">{plan.name}</h4>
+                  <p>{plan.description}</p>
+                  <h5 className="font-semibold mt-2">Meals:</h5>
+                  {plan.meals.length > 0 ? (
+                    <ul className="list-disc pl-5">
+                      {plan.meals.map((meal, mealIndex) => (
+                        <li key={mealIndex}>
+                          <strong>{meal.mealName}</strong>
+                          <ul className="list-disc pl-5">
+                            {meal.items.map((item, itemIndex) => (
+                              <li key={itemIndex}>
+                                {item.itemName} - {item.calories} kcal
+                              </li>
+                            ))}
+                          </ul>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>No meals available.</p>
+                  )}
+                </div>
+              ))
+            ) : (
+              <p>No diet plans available.</p>
+            )}
+          </div>
+        ) : (
+          <p>Select a coach to view their content.</p>
+        )}
+      </div>
     </div>
   );
 };

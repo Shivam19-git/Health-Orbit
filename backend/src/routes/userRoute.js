@@ -53,6 +53,35 @@ router.get('/connected-coaches', verifyToken, async (req, res) => {
   }
 });
 
+router.get("/coach/:coachId", verifyToken, async (req, res) => {
+  const { coachId } = req.params;
+
+  try {
+    // Fetch the coach details from the database
+    const coach = await Coach.findById(coachId).select(
+      "name email specialization experience bio workouts dietPlans"
+    );
+
+    if (!coach) {
+      return res.status(404).json({ message: "Coach not found" });
+    }
+
+    // Return the coach details
+    res.status(200).json({
+      name: coach.name,
+      email: coach.email,
+      specialization: coach.specialization,
+      experience: coach.experience,
+      bio: coach.bio,
+      workouts: coach.workouts,
+      dietPlans: coach.dietPlans,
+    });
+  } catch (error) {
+    console.error("Error fetching coach details:", error);
+    res.status(500).json({ message: "Error fetching coach details" });
+  }
+});
+
 router.post('/join-coach/:coachId', verifyToken, fetchUserDetailsMiddleware, async (req, res) => {
     try {
         const { coachId } = req.params;
@@ -82,5 +111,6 @@ router.post('/join-coach/:coachId', verifyToken, fetchUserDetailsMiddleware, asy
         res.status(500).json({ message: "Error sending join request", error: error.message });
     }
 });
+
 
 module.exports = router;
