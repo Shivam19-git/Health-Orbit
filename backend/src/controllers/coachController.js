@@ -208,6 +208,86 @@ const getWorkouts = async (req, res) => {
     }
 };
 
+const getDietPlans = async (req, res) => {
+    const { coachId } = req.params;
+
+    try {
+        const coach = await Coach.findById(coachId);
+        if (!coach) {
+            return res.status(404).json({ message: "Coach not found" });
+        }
+
+        res.status(200).json({ dietPlans: coach.dietPlans });
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching diet plans", error: error.message });
+    }
+};
+
+const addDietPlan = async (req, res) => {
+    const { coachId } = req.params;
+    const { name, description, meals } = req.body;
+
+    try {
+        const coach = await Coach.findById(coachId);
+        if (!coach) {
+            return res.status(404).json({ message: "Coach not found" });
+        }
+
+        const newDietPlan = { name, description, meals };
+        coach.dietPlans.push(newDietPlan);
+        await coach.save();
+
+        res.status(201).json({ message: "Diet plan added successfully", dietPlans: coach.dietPlans });
+    } catch (error) {
+        res.status(500).json({ message: "Error adding diet plan", error: error.message });
+    }
+};
+
+const updateDietPlan = async (req, res) => {
+    const { coachId, dietPlanId } = req.params;
+    const { name, description, meals } = req.body;
+
+    try {
+        const coach = await Coach.findById(coachId);
+        if (!coach) {
+            return res.status(404).json({ message: "Coach not found" });
+        }
+
+        const dietPlan = coach.dietPlans.id(dietPlanId);
+        if (!dietPlan) {
+            return res.status(404).json({ message: "Diet plan not found" });
+        }
+
+        dietPlan.name = name || dietPlan.name;
+        dietPlan.description = description || dietPlan.description;
+        dietPlan.meals = meals || dietPlan.meals;
+
+        await coach.save();
+
+        res.status(200).json({ message: "Diet plan updated successfully", dietPlans: coach.dietPlans });
+    } catch (error) {
+        res.status(500).json({ message: "Error updating diet plan", error: error.message });
+    }
+};
+
+const deleteDietPlan = async (req, res) => {
+    const { coachId, dietPlanId } = req.params;
+
+    try {
+        const coach = await Coach.findById(coachId);
+        if (!coach) {
+            return res.status(404).json({ message: "Coach not found" });
+        }
+
+        coach.dietPlans = coach.dietPlans.filter((plan) => plan._id.toString() !== dietPlanId);
+        await coach.save();
+
+        res.status(200).json({ message: "Diet plan deleted successfully", dietPlans: coach.dietPlans });
+    } catch (error) {
+        res.status(500).json({ message: "Error deleting diet plan", error: error.message });
+    }
+};
+
 module.exports = {
     registerCoach,
     loginCoach,
@@ -218,4 +298,8 @@ module.exports = {
     updateWorkout,
     deleteWorkout,
     getWorkouts,
+    getDietPlans,
+    addDietPlan,
+    updateDietPlan,
+    deleteDietPlan,
 };

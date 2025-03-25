@@ -8,7 +8,11 @@ const {
     addWorkout,
     updateWorkout,
     deleteWorkout,
-    getWorkouts } = require('../controllers/coachController')
+    getWorkouts,
+    getDietPlans,
+    addDietPlan,
+    updateDietPlan,
+    deleteDietPlan } = require('../controllers/coachController')
 
 const upload = require('../config/multer')
 const verifyToken = require('../middlewares/authMiddleware')
@@ -137,5 +141,11 @@ router.post('/:coachId/workouts', addWorkout); // Add a workout
 router.put('/:coachId/workouts/:workoutId', updateWorkout); // Update a workout
 router.delete('/:coachId/workouts/:workoutId', deleteWorkout); // Delete a workout
 router.get('/:coachId/workouts', getWorkouts); // Fetch all workouts
+
+// Add new diet plan routes
+router.get('/:coachId/diet-plans', getDietPlans); // Fetch all diet plans
+router.post('/:coachId/diet-plans', addDietPlan); // Add a new diet plan
+router.put('/:coachId/diet-plans/:dietPlanId', updateDietPlan); // Update a diet plan
+router.delete('/:coachId/diet-plans/:dietPlanId', deleteDietPlan); // Delete a diet plan
 
 module.exports = router

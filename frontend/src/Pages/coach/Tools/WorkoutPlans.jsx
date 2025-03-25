@@ -105,7 +105,7 @@ const WorkoutPlans = () => {
           />
           <button
             onClick={handleAddWorkout}
-            className="bg-blue-500 text-white p-2 rounded"
+            className="bg-blue-500 text-white p-2 rounded cursor-pointer"
           >
             Add Workout
           </button>
@@ -172,7 +172,7 @@ const WorkoutPlans = () => {
             />
             <button
               onClick={handleUpdateWorkout}
-              className="bg-green-500 text-white p-2 rounded"
+              className="bg-green-500 text-white p-2 rounded cursor-pointer"
             >
               Update Workout
             </button>

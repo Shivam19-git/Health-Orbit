@@ -6,6 +6,7 @@ import CoachesList from "../user/Tools/CoachesList";
 import ClientRequests from "./Tools/ClientRequests";
 import WorkoutPlans from "./Tools/WorkoutPlans"; // Import the WorkoutPlans component
 import AcceptedClients from "./Tools/AcceptedClients"; // Import the new component
+import DietPlans from "./Tools/DietPlans"; // Import the DietPlans component
 
 const CoachDashboard = () => {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -30,12 +31,7 @@ const CoachDashboard = () => {
                 <AcceptedClients /> {/* Render accepted clients */}
               </div>
             ) : selectedOption === "diet-plans" ? (
-              <div>
-                <h2 className="text-2xl font-bold mb-4">Diet Plans</h2>
-                <p className="text-gray-600">
-                  Create and manage diet plans for your clients.
-                </p>
-              </div>
+              <DietPlans /> // Render the DietPlans component
             ) : selectedOption === "workout-plans" ? (
               <WorkoutPlans /> // Render the WorkoutPlans component
             ) : selectedOption === "client-requests" ? (

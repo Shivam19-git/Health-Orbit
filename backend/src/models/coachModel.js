@@ -95,6 +95,46 @@ const coachSchema = new mongoose.Schema({
       },
     },
   ],
+  dietPlans: [
+    {
+      _id: {
+        type: mongoose.Schema.Types.ObjectId,
+        default: () => new mongoose.Types.ObjectId(), // Generate a unique ID
+      },
+      name: {
+        type: String,
+        required: true,
+      },
+      description: {
+        type: String,
+        default: "",
+      },
+      meals: [
+        {
+          mealName: {
+            type: String,
+            required: true,
+          },
+          items: [
+            {
+              itemName: {
+                type: String,
+                required: true,
+              },
+              calories: {
+                type: Number,
+                required: true,
+              },
+            },
+          ],
+        },
+      ],
+      timestamp: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
 });
 
 module.exports = mongoose.model('Coach', coachSchema);
