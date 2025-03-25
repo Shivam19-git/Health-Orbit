@@ -84,6 +84,17 @@ const DietPlans = () => {
     setEditingDietPlan({ ...editingDietPlan, meals: updatedMeals });
   };
 
+  // Delete a diet plan
+  const handleDeleteDietPlan = async (dietPlanId) => {
+    try {
+      await deleteDietPlan(dietPlanId);
+      const data = await fetchDietPlans();
+      setDietPlans(data.dietPlans);
+    } catch (error) {
+      console.error("Error deleting diet plan:", error);
+    }
+  };
+
   // Delete a specific meal
   const handleDeleteMeal = (mealIndex) => {
     const updatedMeals = [...editingDietPlan.meals];
