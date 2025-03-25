@@ -26,9 +26,15 @@ router.get('/connected-coaches', verifyToken, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Populate coach details for each connected coach
+    // Filter out duplicate coachId entries
+    const uniqueConnectedCoaches = user.connectedCoaches.filter(
+      (connectedCoach, index, self) =>
+        index === self.findIndex((c) => c.coachId.toString() === connectedCoach.coachId.toString())
+    );
+
+    // Populate coach details for each unique connected coach
     const connectedCoaches = await Promise.all(
-      user.connectedCoaches.map(async (connectedCoach) => {
+      uniqueConnectedCoaches.map(async (connectedCoach) => {
         const coach = await Coach.findById(connectedCoach.coachId).select('name email specialization experience bio');
         return {
           ...connectedCoach.toObject(),

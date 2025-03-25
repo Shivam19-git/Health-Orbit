@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import { fetchConnectedCoaches } from "../../../APIs/userAPI";
-import { fetchCoachDetails } from "../../../APIs/coachAPI";
 
 const MyCoaches = () => {
   const [coaches, setCoaches] = useState([]);
@@ -12,27 +11,18 @@ const MyCoaches = () => {
     try {
       setLoading(true);
 
-      // Fetch connected coaches
+      // Fetch connected coaches from the backend
       const connectedCoaches = await fetchConnectedCoaches();
       console.log("Connected Coaches API Response:", connectedCoaches); // Debugging log
 
-      // Fetch details for each coach
-      const detailedCoaches = await Promise.all(
-        connectedCoaches.map(async (connectedCoach) => {
-          const coachDetails = await fetchCoachDetails(connectedCoach.coachId);
-          return {
-            ...connectedCoach, // Include the original connectedCoach data
-            coachName: coachDetails.name,
-            coachEmail: coachDetails.email,
-            specialization: coachDetails.specialization,
-            experience: coachDetails.experience,
-            bio: coachDetails.bio,
-          };
-        })
+      // Ensure unique coaches based on coachId
+      const uniqueCoaches = connectedCoaches.filter(
+        (coach, index, self) =>
+          index === self.findIndex((c) => c.coachId === coach.coachId)
       );
+      console.log("Unique Coaches:", uniqueCoaches); // Debugging log
 
-      console.log("Detailed Coaches:", detailedCoaches); // Debugging log
-      setCoaches(detailedCoaches);
+      setCoaches(uniqueCoaches); // Update state with unique coaches
     } catch (err) {
       console.error("Error fetching connected coaches:", err); // Debugging log
       setError("Failed to fetch connected coaches. Please try again.");
@@ -52,9 +42,9 @@ const MyCoaches = () => {
       {error && <p className="text-red-500">{error}</p>}
       {!loading && coaches.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {coaches.map((coach, index) => (
+          {coaches.map((coach) => (
             <div
-              key={`${coach.coachId}-${index}`} // Ensure unique key for each coach
+              key={coach.coachId} // Use a unique key for each coach
               className="bg-white rounded-xl shadow-lg overflow-hidden transform transition duration-300 hover:shadow-2xl hover:-translate-y-1"
             >
               <div className="relative">
