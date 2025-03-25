@@ -4,7 +4,11 @@ const {
     loginCoach, 
     logoutCoach, 
     updateCoachDetails,
-    getCoachDetails } = require('../controllers/coachController')
+    getCoachDetails,
+    addWorkout,
+    updateWorkout,
+    deleteWorkout,
+    getWorkouts } = require('../controllers/coachController')
 
 const upload = require('../config/multer')
 const verifyToken = require('../middlewares/authMiddleware')
@@ -27,8 +31,7 @@ router.get('/details',getCoachDetails);
 router.put('/update-details', updateCoachDetails);
 
 router.get('/pending-requests', async (req, res) => {
-    try {
-        const coachId = req.user.id;
+    try {        const coachId = req.user.id;
 
         const coach = await Coach.findById(coachId).select('pendingRequests');
         if (!coach) {
@@ -103,5 +106,11 @@ router.put('/accept-request/:userId', verifyToken, async (req, res) => {
       res.status(500).json({ message: "Error rejecting request", error: error.message });
     }
   });
+
+// Add new workout routes
+router.post('/:coachId/workouts', addWorkout); // Add a workout
+router.put('/:coachId/workouts/:workoutId', updateWorkout); // Update a workout
+router.delete('/:coachId/workouts/:workoutId', deleteWorkout); // Delete a workout
+router.get('/:coachId/workouts', getWorkouts); // Fetch all workouts
 
 module.exports = router

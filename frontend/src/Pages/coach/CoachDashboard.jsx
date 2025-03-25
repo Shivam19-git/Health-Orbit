@@ -5,6 +5,7 @@ import Sidebar from "./Tools/Sidebar";
 import UpdateCoachDetails from "./Tools/UpdateCoachDetails";
 import CoachesList from "../user/Tools/CoachesList";
 import ClientRequests from "./Tools/ClientRequests";
+import WorkoutPlans from "./Tools/WorkoutPlans"; // Import the WorkoutPlans component
 
 const CoachDashboard = () => {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -38,12 +39,7 @@ const CoachDashboard = () => {
                 </p>
               </div>
             ) : selectedOption === "workout-plans" ? (
-              <div>
-                <h2 className="text-2xl font-bold mb-4">Workout Plans</h2>
-                <p className="text-gray-600">
-                  Create and manage workout programs for your clients.
-                </p>
-              </div>
+              <WorkoutPlans /> // Render the WorkoutPlans component
             ) : selectedOption === "client-requests" ? (
               <ClientRequests />
             ) : selectedOption === "update-details" ? (

@@ -3,7 +3,6 @@ import axios from "axios";
 
 const API_URL = import.meta.env.VITE_BACKEND_API_URL;
 
-
 // Set authorization token in headers
 const setAuthToken = (token) => {
   if (token) {
@@ -137,6 +136,90 @@ export const sendJoinRequest = async (coachId) => {
     return response.data;
   } catch (error) {
     console.error("Error sending join request:", error);
+    throw error;
+  }
+};
+
+// Fetch all workouts for the logged-in coach
+export const fetchWorkouts = async () => {
+  try {
+    const token = localStorage.getItem("coachToken");
+    const coachId = localStorage.getItem("coachId");
+    if (!token || !coachId) {
+      throw new Error("No token or coach ID found. Please log in again.");
+    }
+
+    const response = await axios.get(`${API_URL}/coach/${coachId}/workouts`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching workouts:", error);
+    throw error;
+  }
+};
+
+// Add a new workout
+export const addWorkout = async (workout) => {
+  try {
+    const token = localStorage.getItem("coachToken");
+    const coachId = localStorage.getItem("coachId");
+    if (!token || !coachId) {
+      throw new Error("No token or coach ID found. Please log in again.");
+    }
+
+    const response = await axios.post(`${API_URL}/coach/${coachId}/workouts`, workout, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error adding workout:", error);
+    throw error;
+  }
+};
+
+// Update an existing workout
+export const updateWorkout = async (workoutId, workout) => {
+  try {
+    const token = localStorage.getItem("coachToken");
+    const coachId = localStorage.getItem("coachId");
+    if (!token || !coachId) {
+      throw new Error("No token or coach ID found. Please log in again.");
+    }
+
+    const response = await axios.put(`${API_URL}/coach/${coachId}/workouts/${workoutId}`, workout, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating workout:", error);
+    throw error;
+  }
+};
+
+// Delete a workout
+export const deleteWorkout = async (workoutId) => {
+  try {
+    const token = localStorage.getItem("coachToken");
+    const coachId = localStorage.getItem("coachId");
+    if (!token || !coachId) {
+      throw new Error("No token or coach ID found. Please log in again.");
+    }
+
+    const response = await axios.delete(`${API_URL}/coach/${coachId}/workouts/${workoutId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting workout:", error);
     throw error;
   }
 };

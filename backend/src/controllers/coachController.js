@@ -1,38 +1,36 @@
-const Coach = require('../models/coachModel')   
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
+const Coach = require('../models/coachModel');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const registerCoach = async (req, res) => {
     try {
-        const {name, email, password } = req.body
-        
+        const { name, email, password } = req.body;
+
         if (!req.file) {
-            return res.status(400).json({ message: "Certificate file is required" })
+            return res.status(400).json({ message: "Certificate file is required" });
         }
 
-        const existingCoach = await Coach.findOne({email})
-        if(existingCoach){
-            return res.status(400).json({message : "Coach already exists"})
+        const existingCoach = await Coach.findOne({ email });
+        if (existingCoach) {
+            return res.status(400).json({ message: "Coach already exists" });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10)
-        
-        //SAVE COACH not Approved yet
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Save coach (not approved yet)
         const newCoach = new Coach({
             name,
             email,
-            password : hashedPassword,
-            certificateURL : req.file.path,
-            isApproved : false
-        })
-        await newCoach.save() // save to database with pending approval
-        res.status(201).json({ message: "Coach registration requested. Waiting for admin approval." })
-
-
+            password: hashedPassword,
+            certificateURL: req.file.path,
+            isApproved: false,
+        });
+        await newCoach.save(); // Save to database with pending approval
+        res.status(201).json({ message: "Coach registration requested. Waiting for admin approval." });
     } catch (error) {
-        res.status(500).json({ message: "Error in coach registration", error: error.message })
+        res.status(500).json({ message: "Error in coach registration", error: error.message });
     }
-}
+};
 
 const loginCoach = async (req, res) => {
     try {
@@ -70,18 +68,18 @@ const loginCoach = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: "Error in coach login", error: error.message });
     }
-}
+};
 
 const logoutCoach = (req, res) => {
     try {
         if (!req.cookies.token) {
-            return res.status(400).json({ message: "No token found" })
+            return res.status(400).json({ message: "No token found" });
         }
-        res.clearCookie('token').status(200).json({ message: "Coach logged out successfully" })
+        res.clearCookie('token').status(200).json({ message: "Coach logged out successfully" });
     } catch (error) {
-        res.status(500).json({ message: "Error in coach logout", error: error.message })
+        res.status(500).json({ message: "Error in coach logout", error: error.message });
     }
-}
+};
 
 const updateCoachDetails = async (req, res) => {
     try {
@@ -119,4 +117,105 @@ const getCoachDetails = async (req, res) => {
     }
 };
 
-module.exports = { registerCoach, loginCoach, logoutCoach, updateCoachDetails, getCoachDetails };
+// Add a new workout
+const addWorkout = async (req, res) => {
+    const { coachId } = req.params;
+    const { name, description, videoId, category } = req.body;
+
+    try {
+        const coach = await Coach.findById(coachId);
+        if (!coach) {
+            return res.status(404).json({ message: "Coach not found" });
+        }
+
+        const newWorkout = { name, description, videoId, category };
+        coach.workouts.push(newWorkout);
+        await coach.save();
+
+        res.status(201).json({ message: "Workout added successfully", workouts: coach.workouts });
+    } catch (error) {
+        res.status(500).json({ message: "Error adding workout", error: error.message });
+    }
+};
+
+// Update an existing workout
+const updateWorkout = async (req, res) => {
+    const { coachId, workoutId } = req.params;
+    const { name, description, videoId, category } = req.body;
+
+    try {
+        const coach = await Coach.findById(coachId);
+        if (!coach) {
+            return res.status(404).json({ message: "Coach not found" });
+        }
+
+        const workout = coach.workouts.id(workoutId);
+        if (!workout) {
+            return res.status(404).json({ message: "Workout not found" });
+        }
+
+        // Update workout fields
+        workout.name = name || workout.name;
+        workout.description = description || workout.description;
+        workout.videoId = videoId || workout.videoId;
+        workout.category = category || workout.category;
+
+        await coach.save();
+
+        res.status(200).json({ message: "Workout updated successfully", workouts: coach.workouts });
+    } catch (error) {
+        res.status(500).json({ message: "Error updating workout", error: error.message });
+    }
+};
+
+// Delete a workout
+const deleteWorkout = async (req, res) => {
+    const { coachId, workoutId } = req.params;
+
+    try {
+        // Find the coach by ID
+        const coach = await Coach.findById(coachId);
+        if (!coach) {
+            return res.status(404).json({ message: "Coach not found" });
+        }
+
+        // Use Mongoose's $pull operator to remove the workout by its _id
+        coach.workouts = coach.workouts.filter((workout) => workout._id.toString() !== workoutId);
+
+        // Save the updated coach document
+        await coach.save();
+
+        res.status(200).json({ message: "Workout deleted successfully", workouts: coach.workouts });
+    } catch (error) {
+        console.error("Error deleting workout:", error);
+        res.status(500).json({ message: "Error deleting workout", error: error.message });
+    }
+};
+
+// Fetch all workouts for a coach
+const getWorkouts = async (req, res) => {
+    const { coachId } = req.params;
+
+    try {
+        const coach = await Coach.findById(coachId);
+        if (!coach) {
+            return res.status(404).json({ message: "Coach not found" });
+        }
+
+        res.status(200).json({ workouts: coach.workouts });
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching workouts", error: error.message });
+    }
+};
+
+module.exports = {
+    registerCoach,
+    loginCoach,
+    logoutCoach,
+    updateCoachDetails,
+    getCoachDetails,
+    addWorkout,
+    updateWorkout,
+    deleteWorkout,
+    getWorkouts,
+};

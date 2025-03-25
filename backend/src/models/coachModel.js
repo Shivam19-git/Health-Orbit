@@ -67,6 +67,34 @@ const coachSchema = new mongoose.Schema({
       },
     },
   ],
+  workouts: [
+    {
+      _id: {
+        type: mongoose.Schema.Types.ObjectId,
+        default: () => new mongoose.Types.ObjectId(), // Generate a new ObjectId
+      },
+      name: {
+        type: String,
+        required: true,
+      },
+      description: {
+        type: String,
+        default: "",
+      },
+      videoId: {
+        type: String,
+        required: true, // YouTube video ID
+      },
+      category: {
+        type: String,
+        required: true, // e.g., "Strength", "Cardio"
+      },
+      timestamp: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
 });
 
 module.exports = mongoose.model('Coach', coachSchema);
