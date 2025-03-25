@@ -9,24 +9,24 @@ const CoachesList = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [requestedCoaches, setRequestedCoaches] = useState([]); // Track requested coaches
 
+  const fetchCoaches = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchAllCoaches();
+      setCoaches(data);
+      setError("");
+
+      // Fetch requested coaches from backend or local state
+      const requested = data.filter((coach) => coach.isRequested); // Assuming backend sends `isRequested`
+      setRequestedCoaches(requested.map((coach) => coach._id));
+    } catch (err) {
+      setError("Failed to fetch coaches. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchCoaches = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchAllCoaches();
-        setCoaches(data);
-        setError("");
-
-        // Fetch requested coaches from backend or local state
-        const requested = data.filter((coach) => coach.isRequested); // Assuming backend sends `isRequested`
-        setRequestedCoaches(requested.map((coach) => coach._id));
-      } catch (err) {
-        setError("Failed to fetch coaches. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchCoaches();
   }, []);
 
@@ -54,7 +54,15 @@ const CoachesList = () => {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">Our Expert Coaches</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-3xl font-bold text-gray-800">Our Expert Coaches</h2>
+        <button
+          onClick={fetchCoaches}
+          className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition duration-300"
+        >
+          Refresh Coaches
+        </button>
+      </div>
 
       {loading && <p className="text-gray-600">Loading...</p>}
       {error && <p className="text-red-500">{error}</p>}
