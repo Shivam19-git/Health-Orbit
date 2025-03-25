@@ -50,6 +50,14 @@ const Sidebar = ({ selectedOption, setSelectedOption, calculateInsights }) => {
         >
           View Coaches
         </button>
+        <button
+          className={`w-full text-left p-3 rounded-md transition ${
+            selectedOption === "my-coaches" ? "bg-indigo-100 text-indigo-800" : "hover:bg-gray-100"
+          }`}
+          onClick={() => setSelectedOption("my-coaches")}
+        >
+          My Coaches
+        </button>
       </div>
     </div>
   );

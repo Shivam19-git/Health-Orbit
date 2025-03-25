@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
-import { fetchAllCoaches  } from "../../../APIs/coachAPI";
-import { sendJoinRequest } from "../../../APIs/userAPI";
+import { fetchAllCoaches } from "../../../APIs/coachAPI";
+import { sendJoinRequest, fetchConnectedCoaches } from "../../../APIs/userAPI";
 
 const CoachesList = () => {
   const [coaches, setCoaches] = useState([]);
@@ -9,6 +9,7 @@ const CoachesList = () => {
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [requestedCoaches, setRequestedCoaches] = useState([]); // Track requested coaches
+  const [connectedCoaches, setConnectedCoaches] = useState([]); // Track connected coaches
 
   const fetchCoaches = async () => {
     try {
@@ -17,9 +18,9 @@ const CoachesList = () => {
       setCoaches(data);
       setError("");
 
-      // Fetch requested coaches from backend or local state
-      const requested = data.filter((coach) => coach.isRequested); // Assuming backend sends `isRequested`
-      setRequestedCoaches(requested.map((coach) => coach._id));
+      // Fetch connected coaches
+      const connected = await fetchConnectedCoaches();
+      setConnectedCoaches(connected.map((coach) => coach.coachId)); // Assuming connectedCoaches contains coachId
     } catch (err) {
       setError("Failed to fetch coaches. Please try again.");
     } finally {
@@ -148,17 +149,25 @@ const CoachesList = () => {
                 </div>
 
                 <div className="mt-6">
-                  <button
-                    onClick={() => handleRequestCoach(coach._id)}
-                    disabled={requestedCoaches.includes(coach._id)} // Disable button if already requested
-                    className={`w-full py-2 rounded-lg transition duration-300 focus:outline-none focus:ring-2 ${
-                      requestedCoaches.includes(coach._id)
-                        ? "bg-gray-400 text-white cursor-not-allowed"
-                        : "bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:opacity-90 focus:ring-blue-500 focus:ring-opacity-50"
-                    }`}
-                  >
-                    {requestedCoaches.includes(coach._id) ? "Requested" : "Request Coach"}
-                  </button>
+                  {connectedCoaches.includes(coach._id) ? (
+                    <button
+                      className="w-full py-2 rounded-lg bg-green-500 text-white hover:bg-green-600 transition duration-300"
+                    >
+                      View Contents
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleRequestCoach(coach._id)}
+                      disabled={requestedCoaches.includes(coach._id)} // Disable button if already requested
+                      className={`w-full py-2 rounded-lg transition duration-300 focus:outline-none focus:ring-2 ${
+                        requestedCoaches.includes(coach._id)
+                          ? "bg-gray-400 text-white cursor-not-allowed"
+                          : "bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:opacity-90 focus:ring-blue-500 focus:ring-opacity-50"
+                      }`}
+                    >
+                      {requestedCoaches.includes(coach._id) ? "Requested" : "Request Coach"}
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

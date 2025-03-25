@@ -7,6 +7,7 @@ import DietTool from "./Tools/DietTool";
 import WorkoutPrograms from "./Tools/WorkoutPrograms";
 import Insights from "./Tools/Insights";
 import CoachesList from "./Tools/CoachesList";
+import MyCoaches from "./Tools/MyCoaches"; // Import the new component
 
 const UserDashboard = () => {
   const [fullName, setFullName] = useState("");
@@ -112,6 +113,8 @@ const UserDashboard = () => {
               <Insights insights={insights} categories={categories} />
             ) : selectedOption === "coaches" ? (
               <CoachesList />
+            ) : selectedOption === "my-coaches" ? (
+              <MyCoaches /> // Render the MyCoaches component
             ) : null}
           </div>
         </div>
