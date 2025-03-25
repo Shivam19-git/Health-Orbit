@@ -39,7 +39,7 @@ export const logoutCoach = async () => {
 // Fetch all approved coaches
 export const fetchAllCoaches = async () => {
   try {
-    const token = localStorage.getItem("coachToken");
+    const token = localStorage.getItem("authToken");
     if (!token) {
       throw new Error("No token found. Please log in again.");
     }
