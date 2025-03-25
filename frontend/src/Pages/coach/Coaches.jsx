@@ -1,5 +1,4 @@
-import React from "react";
-import { Link } from "react-router-dom";
+/* eslint-disable react/prop-types */
 import { BeforeLoginNavBar, AfterLoginNavBar } from "../Components/NavBar";
 
 // Importing local images

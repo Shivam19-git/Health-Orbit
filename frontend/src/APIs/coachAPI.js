@@ -36,3 +36,108 @@ export const logoutCoach = async () => {
   const response = await axios.post(`${API_URL}/coach/logout`);
   return response.data;
 };
+
+// Fetch all approved coaches
+export const fetchAllCoaches = async () => {
+  try {
+    const token = localStorage.getItem("coachToken");
+    if (!token) {
+      throw new Error("No token found. Please log in again.");
+    }
+
+    const response = await axios.get(`${API_URL}/user/all-coaches`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data; 
+  } catch (error) {
+    console.error("Error fetching coaches:", error);
+    throw error;
+  }
+};
+
+// Update coach details
+export const updateCoachDetails = async (details) => {
+  try {
+    const token = localStorage.getItem("coachToken");
+    if (!token) {
+      throw new Error("No token found. Please log in again.");
+    }
+
+    const response = await axios.put(`${API_URL}/coach/update-details`, details, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating coach details:", error);
+    throw error;
+  }
+};
+
+// Fetch coach details
+export const fetchCoachDetails = async () => {
+  try {
+    const token = localStorage.getItem("coachToken");
+    if (!token) {
+      throw new Error("No token found. Please log in again.");
+    }
+
+    const response = await axios.get(`${API_URL}/coach/details`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching coach details:", error);
+    throw error;
+  }
+};
+
+// Fetch pending client requests
+export const fetchPendingRequests = async () => {
+  try {
+    const token = localStorage.getItem("coachToken");
+    if (!token) {
+      throw new Error("No token found. Please log in again.");
+    }
+
+    const response = await axios.get(`${API_URL}/coach/pending-requests`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching pending requests:", error);
+    throw error;
+  }
+};
+
+// Send a join request to a coach
+export const sendJoinRequest = async (coachId) => {
+  try {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      throw new Error("No token found. Please log in again.");
+    }
+
+    const response = await axios.post(
+      `${API_URL}/user/join-coach/${coachId}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error sending join request:", error);
+    throw error;
+  }
+};
+
