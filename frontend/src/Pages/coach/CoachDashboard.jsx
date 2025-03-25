@@ -1,11 +1,11 @@
-/* eslint-disable no-unused-vars */
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import CoachNavbar from "../../Components/CoachNavbar";
 import Sidebar from "./Tools/Sidebar";
 import UpdateCoachDetails from "./Tools/UpdateCoachDetails";
 import CoachesList from "../user/Tools/CoachesList";
 import ClientRequests from "./Tools/ClientRequests";
 import WorkoutPlans from "./Tools/WorkoutPlans"; // Import the WorkoutPlans component
+import AcceptedClients from "./Tools/AcceptedClients"; // Import the new component
 
 const CoachDashboard = () => {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -27,9 +27,7 @@ const CoachDashboard = () => {
             ) : selectedOption === "clients" ? (
               <div>
                 <h2 className="text-2xl font-bold mb-4">Clients</h2>
-                <p className="text-gray-600">
-                  Manage your client list and their details here.
-                </p>
+                <AcceptedClients /> {/* Render accepted clients */}
               </div>
             ) : selectedOption === "diet-plans" ? (
               <div>
@@ -41,7 +39,10 @@ const CoachDashboard = () => {
             ) : selectedOption === "workout-plans" ? (
               <WorkoutPlans /> // Render the WorkoutPlans component
             ) : selectedOption === "client-requests" ? (
-              <ClientRequests />
+              <div>
+                <h2 className="text-2xl font-bold mb-4">Client Requests</h2>
+                <ClientRequests /> {/* Render pending requests */}
+              </div>
             ) : selectedOption === "update-details" ? (
               <UpdateCoachDetails />
             ) : selectedOption === "view-coaches" ? (

@@ -12,14 +12,10 @@ const setAuthToken = (token) => {
   };
 // Admin Login
 const loginAdmin = async (username, password) => {
-  try {
-    const response = await axios.post(`${API_URL}/admin/login`, { username, password });
-    localStorage.setItem("token", response.token); // Save token to localStorage
-    setAuthToken(response.token); // Set token in headers
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
+  const response = await axios.post(`${API_URL}/admin/login`, { username, password });
+  localStorage.setItem("token", response.token); // Save token to localStorage
+  setAuthToken(response.token); // Set token in headers
+  return response.data;
 };
 
 const getPendingCoaches = async () => {

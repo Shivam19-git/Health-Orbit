@@ -38,9 +38,34 @@ router.get('/pending-requests', async (req, res) => {
             return res.status(404).json({ message: "Coach not found" });
         }
 
-        res.status(200).json(coach.pendingRequests);
+        // Filter only pending requests
+        const pendingRequests = coach.pendingRequests.filter(
+            (request) => request.status === 'pending'
+        );
+
+        res.status(200).json(pendingRequests);
     } catch (error) {
         res.status(500).json({ message: "Error fetching pending requests", error: error.message });
+    }
+});
+
+router.get('/accepted-requests', async (req, res) => {
+    try {
+        const coachId = req.user.id;
+
+        const coach = await Coach.findById(coachId).select('pendingRequests');
+        if (!coach) {
+            return res.status(404).json({ message: "Coach not found" });
+        }
+
+        // Filter only accepted requests
+        const acceptedRequests = coach.pendingRequests.filter(
+            (request) => request.status === 'accepted'
+        );
+
+        res.status(200).json(acceptedRequests);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching accepted requests", error: error.message });
     }
 });
 

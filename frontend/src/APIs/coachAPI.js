@@ -116,16 +116,16 @@ export const fetchPendingRequests = async () => {
   }
 };
 
-// Send a join request to a coach
-export const sendJoinRequest = async (coachId) => {
+// Accept a client request
+export const acceptClientRequest = async (userId) => {
   try {
-    const token = localStorage.getItem("authToken");
+    const token = localStorage.getItem("coachToken");
     if (!token) {
       throw new Error("No token found. Please log in again.");
     }
 
-    const response = await axios.post(
-      `${API_URL}/user/join-coach/${coachId}`,
+    const response = await axios.put(
+      `${API_URL}/coach/accept-request/${userId}`,
       {},
       {
         headers: {
@@ -135,7 +135,50 @@ export const sendJoinRequest = async (coachId) => {
     );
     return response.data;
   } catch (error) {
-    console.error("Error sending join request:", error);
+    console.error("Error accepting client request:", error);
+    throw error;
+  }
+};
+
+// Reject a client request
+export const rejectClientRequest = async (userId) => {
+  try {
+    const token = localStorage.getItem("coachToken");
+    if (!token) {
+      throw new Error("No token found. Please log in again.");
+    }
+
+    const response = await axios.put(
+      `${API_URL}/coach/reject-request/${userId}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error rejecting client request:", error);
+    throw error;
+  }
+};
+
+export const fetchAcceptedRequests = async () => {
+  try {
+    const token = localStorage.getItem("coachToken");
+    if (!token) {
+      throw new Error("No token found. Please log in again.");
+    }
+
+    const response = await axios.get(`${API_URL}/coach/accepted-requests`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching accepted requests:", error);
     throw error;
   }
 };

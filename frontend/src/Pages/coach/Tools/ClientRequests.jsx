@@ -1,11 +1,16 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
-import { fetchPendingRequests } from "../../../APIs/coachAPI";
+import {
+  fetchPendingRequests,
+  acceptClientRequest,
+  rejectClientRequest,
+} from "../../../APIs/coachAPI";
 
 const ClientRequests = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const fetchRequests = async () => {
     try {
@@ -24,6 +29,34 @@ const ClientRequests = () => {
     fetchRequests();
   }, []);
 
+  const handleAccept = async (userId) => {
+    try {
+      await acceptClientRequest(userId);
+      setRequests((prevRequests) =>
+        prevRequests.filter((request) => request.userId !== userId)
+      );
+      setSuccessMessage("Request accepted successfully!");
+      setTimeout(() => setSuccessMessage(""), 3000);
+    } catch (err) {
+      setError("Failed to accept the request. Please try again.");
+      setTimeout(() => setError(""), 3000);
+    }
+  };
+
+  const handleReject = async (userId) => {
+    try {
+      await rejectClientRequest(userId);
+      setRequests((prevRequests) =>
+        prevRequests.filter((request) => request.userId !== userId)
+      );
+      setSuccessMessage("Request rejected successfully!");
+      setTimeout(() => setSuccessMessage(""), 3000);
+    } catch (err) {
+      setError("Failed to reject the request. Please try again.");
+      setTimeout(() => setError(""), 3000);
+    }
+  };
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="flex justify-between items-center mb-4">
@@ -38,6 +71,7 @@ const ClientRequests = () => {
 
       {loading && <p className="text-gray-600">Loading...</p>}
       {error && <p className="text-red-500">{error}</p>}
+      {successMessage && <p className="text-green-500">{successMessage}</p>}
 
       {!loading && requests.length > 0 ? (
         <ul className="space-y-4">
@@ -50,10 +84,20 @@ const ClientRequests = () => {
               <p className="text-gray-600">
                 <strong>Email:</strong> {request.userEmail}
               </p>
-              <p className="text-gray-600">
-                <strong>Requested On:</strong>{" "}
-                {new Date(request.timestamp).toLocaleString()}
-              </p>
+              <div className="mt-4 space-x-2">
+                <button
+                  onClick={() => handleAccept(request.userId)}
+                  className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                >
+                  Accept
+                </button>
+                <button
+                  onClick={() => handleReject(request.userId)}
+                  className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                >
+                  Reject
+                </button>
+              </div>
             </li>
           ))}
         </ul>

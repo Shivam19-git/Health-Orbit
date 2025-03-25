@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
-import { fetchAllCoaches, sendJoinRequest } from "../../../APIs/coachAPI";
+import { fetchAllCoaches  } from "../../../APIs/coachAPI";
+import { sendJoinRequest } from "../../../APIs/userAPI";
 
 const CoachesList = () => {
   const [coaches, setCoaches] = useState([]);
