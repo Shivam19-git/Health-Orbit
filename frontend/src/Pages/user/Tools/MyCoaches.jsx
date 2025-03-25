@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import { fetchConnectedCoaches } from "../../../APIs/userAPI";
 
@@ -66,6 +65,13 @@ const MyCoaches = () => {
                   {coach.specialization || "N/A"} - {coach.experience || "N/A"} years
                 </p>
                 <p className="text-gray-600 text-center">{coach.bio || "No bio available"}</p>
+                <div className="mt-4">
+                  <button
+                    className="w-full py-2 rounded-lg bg-green-500 text-white hover:bg-green-600 transition duration-300"
+                  >
+                    View Content
+                  </button>
+                </div>
               </div>
             </div>
           ))}
