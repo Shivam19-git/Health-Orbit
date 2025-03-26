@@ -2,7 +2,7 @@ const Coach = require('../models/coachModel')
 const bcrypt = require('bcryptjs')
 const Admin = require('../models/adminModel')
 const jwt = require('jsonwebtoken')
-
+const User = require("../models/userModel");
 
 const loginAdmin = async (req, res) => {
     try {
@@ -91,24 +91,70 @@ const getApprovedCoaches = async (req, res) => {
     }
   };
 
-// Deactivate a coach
-const deactivateCoach = async (req, res) => {
+// Fetch all users
+const getAllUsers = async (req, res) => {
     try {
-      const { coachId } = req.params;
+      const users = await User.find()
+        .select("fullname email role connectedCoaches")
+        .populate({
+          path: "connectedCoaches.coachId",
+          select: "name email specialization experience bio",
+        });
   
-      const coach = await Coach.findById(coachId);
-      if (!coach) {
-        return res.status(404).json({ message: "Coach not found" });
-      }
-  
-      coach.isApproved = false; // Set isApproved to false
-      await coach.save();
-  
-      res.status(200).json({ message: "Coach deactivated successfully" });
+      res.status(200).json(users);
     } catch (error) {
-      console.error("Error deactivating coach:", error);
-      res.status(500).json({ message: "Error deactivating coach", error: error.message });
+      console.error("Error fetching users:", error);
+      res.status(500).json({ message: "Error fetching users", error: error.message });
     }
   };
 
-module.exports = {getPendingCoaches, approveCoach, rejectCoach , loginAdmin, getApprovedCoaches, deactivateCoach}
+// Deactivate a coach
+const deactivateCoach = async (req, res) => {
+  try {
+    const { coachId } = req.params;
+
+    const coach = await Coach.findById(coachId);
+    if (!coach) {
+      return res.status(404).json({ message: "Coach not found" });
+    }
+
+    coach.isApproved = false; // Set isApproved to false
+    await coach.save();
+
+    res.status(200).json({ message: "Coach deactivated successfully" });
+  } catch (error) {
+    console.error("Error deactivating coach:", error);
+    res.status(500).json({ message: "Error deactivating coach", error: error.message });
+  }
+};
+
+// Deactivate a user
+const deactivateUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.isActive = false; // Set isActive to false (assuming you have an `isActive` field)
+    await user.save();
+
+    res.status(200).json({ message: "User deactivated successfully" });
+  } catch (error) {
+    console.error("Error deactivating user:", error);
+    res.status(500).json({ message: "Error deactivating user", error: error.message });
+  }
+};
+
+module.exports = {
+  getPendingCoaches,
+  approveCoach,
+  rejectCoach,
+  loginAdmin,
+  getApprovedCoaches,
+  getAllUsers,
+  deactivateCoach,
+  deactivateUser,
+};

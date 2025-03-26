@@ -37,7 +37,7 @@ const rejectCoach = async (coachId)=>{
 }
 
 // Fetch all approved coaches
-export const fetchApprovedCoaches = async () => {
+ const fetchApprovedCoaches = async () => {
   try {
     const token = localStorage.getItem("token"); // Use authToken for admin-related actions
     if (!token) {
@@ -57,7 +57,7 @@ export const fetchApprovedCoaches = async () => {
 };
 
 // Deactivate a coach
-const deactivateCoach = async (coachId) => {
+export const deactivateCoach = async (coachId) => {
   try {
     const token = localStorage.getItem("token"); // Use authToken for admin-related actions
     if (!token) {
@@ -76,4 +76,44 @@ const deactivateCoach = async (coachId) => {
   }
 };
 
-export {loginAdmin, getPendingCoaches, approveCoach, rejectCoach, setAuthToken, deactivateCoach};
+// Fetch all users
+ const fetchAllUsers = async () => {
+  try {
+    const token = localStorage.getItem("token"); // Use authToken for admin-related actions
+    if (!token) {
+      throw new Error("No token found. Please log in again.");
+    }
+
+    const response = await axios.get(`${API_URL}/admin/users`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data; // Return the list of users
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    throw error;
+  }
+};
+
+// Deactivate a user
+ const deactivateUser = async (userId) => {
+  try {
+    const token = localStorage.getItem("token"); // Use authToken for admin-related actions
+    if (!token) {
+      throw new Error("No token found. Please log in again.");
+    }
+
+    const response = await axios.put(`${API_URL}/admin/deactivate-user/${userId}`, {}, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data; // Return the response
+  } catch (error) {
+    console.error("Error deactivating user:", error);
+    throw error;
+  }
+};
+
+export {loginAdmin, getPendingCoaches, approveCoach, rejectCoach, setAuthToken, fetchApprovedCoaches, fetchAllUsers,  deactivateUser};
