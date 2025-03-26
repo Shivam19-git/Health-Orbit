@@ -1,8 +1,10 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
-import { getPendingCoaches, approveCoach, rejectCoach, setAuthToken } from "../../APIs/adminAPI";
+import { getPendingCoaches, approveCoach, rejectCoach, setAuthToken, fetchApprovedCoaches, deactivateCoach } from "../../APIs/adminAPI";
 
 const AdminDashboard = () => {
   const [coaches, setCoaches] = useState([]);
+  const [approvedCoaches, setApprovedCoaches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -12,6 +14,7 @@ const AdminDashboard = () => {
       setAuthToken(token); // Set the token in Axios headers
     }
     fetchPendingCoaches();
+    fetchApprovedCoachesList();
   }, []);
 
   const fetchPendingCoaches = async () => {
@@ -28,6 +31,20 @@ const AdminDashboard = () => {
     } catch (error) {
       console.error("Error fetching pending coaches:", error);
       setError("Failed to fetch pending coaches. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchApprovedCoachesList = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchApprovedCoaches();
+      setApprovedCoaches(data);
+      setError("");
+    } catch (err) {
+      console.error("Error fetching approved coaches:", err);
+      setError("Failed to fetch approved coaches. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -50,6 +67,16 @@ const AdminDashboard = () => {
     } catch (error) {
       console.error("Error rejecting coach:", error);
       setError("Failed to reject coach. Please try again.");
+    }
+  };
+
+  const handleDeactivate = async (coachId) => {
+    try {
+      await deactivateCoach(coachId);
+      fetchApprovedCoachesList(); // Refresh the list after deactivation
+    } catch (error) {
+      console.error("Error deactivating coach:", error);
+      setError("Failed to deactivate coach. Please try again.");
     }
   };
 
@@ -102,6 +129,40 @@ const AdminDashboard = () => {
                   className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-300"
                 >
                   Reject
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+      <h2 className="text-2xl font-semibold text-gray-700 mb-4">Approved Coaches</h2>
+      {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+      {approvedCoaches.length === 0 ? (
+        <p className="text-gray-600 text-center">No approved coaches found.</p>
+      ) : (
+        <ul className="space-y-4">
+          {approvedCoaches.map((coach) => (
+            <li
+              key={coach._id}
+              className="bg-white p-6 rounded-lg shadow-md border border-gray-200"
+            >
+              <p className="text-lg font-semibold text-gray-800">
+                Name: {coach.name}
+              </p>
+              <p className="text-gray-600">Email: {coach.email}</p>
+              <p className="text-gray-600">
+                Specialization: {coach.specialization || "N/A"}
+              </p>
+              <p className="text-gray-600">
+                Experience: {coach.experience || "N/A"} years
+              </p>
+              <p className="text-gray-600">Bio: {coach.bio || "N/A"}</p>
+              <div className="flex justify-between mt-4">
+                <button
+                  onClick={() => handleDeactivate(coach._id)}
+                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-300"
+                >
+                  Deactivate
                 </button>
               </div>
             </li>
