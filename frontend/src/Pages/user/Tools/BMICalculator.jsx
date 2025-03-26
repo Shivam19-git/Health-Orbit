@@ -9,6 +9,7 @@ const BMICalculator = ({
   bmiText,
   calculateBMI,
 }) => {
+  // Calculate the position of the BMI indicator on the scale
   const getBmiPosition = () => {
     if (!bmi) return "0%";
     const bmiValue = parseFloat(bmi);
@@ -18,6 +19,7 @@ const BMICalculator = ({
     return "90%";
   };
 
+  // Determine the color of the BMI indicator based on the BMI category
   const getBmiColor = () => {
     if (!bmiText) return "bg-gray-400";
     if (bmiText === "Underweight") return "bg-blue-600";
@@ -25,9 +27,11 @@ const BMICalculator = ({
     if (bmiText === "Overweight") return "bg-yellow-600";
     return "bg-red-600";
   };
+
   return (
     <div className="bg-white p-8 rounded-xl shadow-lg mb-10">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+        {/* Input Section */}
         <div>
           <h2 className="text-3xl font-bold text-gray-800 mb-6">
             Calculate Your BMI
@@ -38,6 +42,7 @@ const BMICalculator = ({
             healthy for your height.
           </p>
 
+          {/* Weight Input */}
           <div className="mb-6">
             <label className="block text-gray-700 text-sm font-medium mb-2">
               Weight (kg)
@@ -45,12 +50,13 @@ const BMICalculator = ({
             <input
               type="number"
               value={weight}
-              onChange={(e) => setWeight(e.target.value)}
+              onChange={(e) => setWeight && setWeight(e.target.value)} // Added fallback for undefined setWeight
               className="border border-gray-300 bg-gray-50 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
               placeholder="Enter your weight in kg"
             />
           </div>
 
+          {/* Height Input */}
           <div className="mb-8">
             <label className="block text-gray-700 text-sm font-medium mb-2">
               Height (cm)
@@ -58,12 +64,13 @@ const BMICalculator = ({
             <input
               type="number"
               value={height}
-              onChange={(e) => setHeight(e.target.value)}
+              onChange={(e) => setHeight && setHeight(e.target.value)} // Added fallback for undefined setHeight
               className="border border-gray-300 bg-gray-50 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
               placeholder="Enter your height in cm"
             />
           </div>
 
+          {/* Calculate BMI Button */}
           <button
             onClick={calculateBMI}
             className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transform hover:scale-[1.02] transition duration-300 shadow-md hover:shadow-lg font-medium"
@@ -72,9 +79,11 @@ const BMICalculator = ({
           </button>
         </div>
 
+        {/* Result Section */}
         <div className="flex flex-col justify-center">
           {bmi ? (
             <>
+              {/* BMI Result */}
               <div className="text-center mb-8">
                 <h3 className="text-3xl font-bold text-gray-800">
                   Your BMI: {bmi}
@@ -127,6 +136,7 @@ const BMICalculator = ({
               </div>
             </>
           ) : (
+            // Placeholder when no BMI is calculated
             <div className="flex flex-col items-center justify-center h-full">
               <div className="w-32 h-32 rounded-full bg-gray-100 flex items-center justify-center mb-4">
                 <svg

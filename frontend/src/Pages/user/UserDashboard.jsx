@@ -99,7 +99,15 @@ const UserDashboard = () => {
                 <p>Select an option from the sidebar to get started</p>
               </div>
             ) : selectedOption === "bmi" ? (
-              <BMICalculator />
+              <BMICalculator
+                weight={weight}
+                setWeight={setWeight}
+                height={height}
+                setHeight={setHeight}
+                bmi={bmi}
+                bmiText={bmiText}
+                calculateBMI={calculateBMI}
+              />
             ) : selectedOption === "diet" ? (
               <DietTool
                 dietData={dietData}

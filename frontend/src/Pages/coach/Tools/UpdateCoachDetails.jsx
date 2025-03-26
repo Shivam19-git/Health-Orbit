@@ -21,14 +21,14 @@ const UpdateCoachDetails = () => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     try {
       const response = await updateCoachDetails(formData);
       setMessage(response.message || "Profile updated successfully!");
       setError("");
-      
+
       // Scroll to top to show success message
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
       setError("Failed to update details. Please try again.");
       setMessage("");
@@ -43,10 +43,16 @@ const UpdateCoachDetails = () => {
         <h2 className="text-3xl font-bold mb-8 text-gray-800">
           Update Profile Details
         </h2>
-        
+
         {/* Success/Error Messages */}
         {(message || error) && (
-          <div className={`mb-6 p-4 rounded-lg ${message ? "bg-green-50 border border-green-100" : "bg-red-50 border border-red-100"}`}>
+          <div
+            className={`mb-6 p-4 rounded-lg ${
+              message
+                ? "bg-green-50 border border-green-100"
+                : "bg-red-50 border border-red-100"
+            }`}
+          >
             <div className="flex items-center">
               {message ? (
                 <FiCheckCircle className="text-green-500 mr-3" size={20} />
@@ -59,7 +65,7 @@ const UpdateCoachDetails = () => {
             </div>
           </div>
         )}
-        
+
         <div className="bg-zinc-50 p-6 rounded-xl shadow-md mb-8">
           <form onSubmit={handleFormSubmit} className="space-y-6">
             {/* Professional Details Section */}
@@ -67,7 +73,7 @@ const UpdateCoachDetails = () => {
               <h3 className="text-xl font-semibold mb-6 text-gray-800 border-b pb-3">
                 Professional Details
               </h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -98,13 +104,13 @@ const UpdateCoachDetails = () => {
                 </div>
               </div>
             </div>
-            
+
             {/* Bio Section */}
             <div className="mb-8">
               <h3 className="text-xl font-semibold mb-6 text-gray-800 border-b pb-3">
                 Bio & Personal Information
               </h3>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Professional Bio
@@ -121,16 +127,18 @@ const UpdateCoachDetails = () => {
                 </p>
               </div>
             </div>
-            
+
             {/* Submit Button */}
             <div className="flex justify-end">
               <button
                 type="submit"
                 disabled={isLoading}
                 className={`flex items-center gap-2 px-6 py-2.5 rounded-lg text-white font-medium cursor-pointer
-                  ${isLoading 
-                    ? "bg-gray-400 cursor-not-allowed" 
-                    : "bg-blue-600 hover:bg-blue-700 transition-colors"}`}
+                  ${
+                    isLoading
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-700 transition-colors"
+                  }`}
               >
                 {isLoading ? (
                   <>
@@ -146,6 +154,29 @@ const UpdateCoachDetails = () => {
               </button>
             </div>
           </form>
+        </div>
+
+        {/* Preview Section */}
+        <div className="bg-gray-50 p-6 rounded-xl shadow-md">
+          <h3 className="text-xl font-semibold mb-4 text-gray-800">
+            Preview of Your Profile
+          </h3>
+          <div className="space-y-4">
+            <div>
+              <h4 className="text-lg font-medium text-gray-700">Specialization:</h4>
+              <p className="text-gray-600">{formData.specialization || "Not provided"}</p>
+            </div>
+            <div>
+              <h4 className="text-lg font-medium text-gray-700">Experience:</h4>
+              <p className="text-gray-600">
+                {formData.experience ? `${formData.experience} years` : "Not provided"}
+              </p>
+            </div>
+            <div>
+              <h4 className="text-lg font-medium text-gray-700">Bio:</h4>
+              <p className="text-gray-600">{formData.bio || "Not provided"}</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
