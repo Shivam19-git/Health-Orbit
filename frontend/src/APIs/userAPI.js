@@ -2,19 +2,7 @@ import axios from "axios";
 
 const API_URL = import.meta.env.VITE_BACKEND_API_URL;
 
-// Utility to handle errors
-const handleError = (error) => {
-  if (error.response) {
-    console.error("Error response:", error.response.data);
-    return error.response.data.message || "An error occurred.";
-  } else if (error.request) {
-    console.error("Error request:", error.request);
-    return "No response from the server. Please try again.";
-  } else {
-    console.error("Error message:", error.message);
-    return error.message || "An unexpected error occurred.";
-  }
-};
+// Utility to handle errors (removed as it is unused)
 
 // Send a join request to a coach
 export const sendJoinRequest = async (coachId) => {
@@ -35,7 +23,11 @@ export const sendJoinRequest = async (coachId) => {
     );
     return response.data;
   } catch (error) {
-    throw new Error(handleError(error));
+    // Return the error message to the caller
+    if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(error.response.data.message);
+    }
+    throw new Error("An error occurred while sending the join request.");
   }
 };
 
@@ -75,6 +67,33 @@ export const fetchCoachDetails = async (coachId) => {
   } catch (error) {
     console.error("Error fetching coach details:", error);
     throw error;
+  }
+};
+
+/**
+ * Fetches the list of coaches that the current user has requested but is not yet connected with
+ * @returns {Promise<Array>} Array of requested coach objects
+ */
+export const fetchRequestedCoaches = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("No authentication token found");
+    }
+
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_URL}/api/user/requested-coaches`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    return response.data || [];
+  } catch (error) {
+    console.error("Error fetching requested coaches:", error);
+    return []; // Return empty array to prevent breaking the component
   }
 };
 

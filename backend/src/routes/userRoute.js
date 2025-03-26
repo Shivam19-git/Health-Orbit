@@ -6,7 +6,6 @@ const User = require('../models/userModel');
 
 const router = express.Router();
 
-
 // Fetch all approved coaches
 router.get('/all-coaches', verifyToken,async (req, res) => {
     try {
@@ -112,5 +111,34 @@ router.post('/join-coach/:coachId', verifyToken, fetchUserDetailsMiddleware, asy
     }
 });
 
+// New route to fetch coaches that the user has requested but not yet connected with
+router.get('/requested-coaches', verifyToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Find all coaches that have a pending request from this user
+    const coaches = await Coach.find({
+      'pendingRequests.userId': mongoose.Types.ObjectId(userId) || userId
+    }).select('_id name email specialization experience bio');
+
+    // Format the response to match the format expected by the frontend
+    const requestedCoaches = coaches.map(coach => ({
+      coachId: coach._id,
+      coachName: coach.name,
+      coachEmail: coach.email,
+      specialization: coach.specialization || "N/A",
+      experience: coach.experience || "N/A",
+      bio: coach.bio || "N/A",
+    }));
+
+    res.status(200).json(requestedCoaches);
+  } catch (error) {
+    console.error("Error fetching requested coaches:", error);
+    res.status(500).json({ 
+      message: "Error fetching requested coaches", 
+      error: error.message 
+    });
+  }
+});
 
 module.exports = router;
