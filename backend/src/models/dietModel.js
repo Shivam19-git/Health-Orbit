@@ -31,6 +31,10 @@ const DietDataSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  eaten: { // New field to track if the item is eaten
+    type: Boolean,
+    default: false,
+  },
 });
 
 const DietData = mongoose.model("DietData", DietDataSchema);
