@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
-import { fetchAcceptedRequests } from "../../../APIs/coachAPI";
+import { fetchAcceptedRequests, removeAcceptedClient } from "../../../APIs/coachAPI";
 
 const AcceptedClients = () => {
   const [clients, setClients] = useState([]);
@@ -17,6 +17,17 @@ const AcceptedClients = () => {
       setError("Failed to fetch accepted clients. Please try again.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRemoveClient = async (userId) => {
+    try {
+      await removeAcceptedClient(userId);
+      setClients((prevClients) =>
+        prevClients.filter((client) => client.userId !== userId)
+      );
+    } catch (err) {
+      setError("Failed to remove client. Please try again.");
     }
   };
 
@@ -41,6 +52,12 @@ const AcceptedClients = () => {
                 <h3 className="text-lg font-bold">{client.userName}</h3>
                 <p className="text-gray-600">{client.userEmail}</p>
               </div>
+              <button
+                onClick={() => handleRemoveClient(client.userId)}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+              >
+                Remove
+              </button>
             </div>
           ))}
         </div>

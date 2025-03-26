@@ -267,3 +267,22 @@ export const deleteWorkout = async (workoutId) => {
   }
 };
 
+export const removeAcceptedClient = async (userId) => {
+  try {
+    const token = localStorage.getItem("coachToken");
+    if (!token) {
+      throw new Error("No token found. Please log in again.");
+    }
+
+    const response = await axios.delete(`${API_URL}/coach/remove-accepted-client/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error removing accepted client:", error);
+    throw error;
+  }
+};
+

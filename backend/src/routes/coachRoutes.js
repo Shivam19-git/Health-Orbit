@@ -136,6 +136,40 @@ router.put('/accept-request/:userId', verifyToken, async (req, res) => {
     }
   });
 
+router.delete('/remove-accepted-client/:userId', verifyToken, async (req, res) => {
+    try {
+        const coachId = req.user.id;
+        const { userId } = req.params;
+
+        // Find the coach
+        const coach = await Coach.findById(coachId);
+        if (!coach) {
+            return res.status(404).json({ message: "Coach not found" });
+        }
+
+        // Remove the client from the coach's accepted list
+        coach.pendingRequests = coach.pendingRequests.filter(
+            (request) => request.userId.toString() !== userId || request.status !== 'accepted'
+        );
+        await coach.save();
+
+        // Find the user and remove the coach from their connectedCoaches list
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        user.connectedCoaches = user.connectedCoaches.filter(
+            (connectedCoach) => connectedCoach.coachId.toString() !== coachId
+        );
+        await user.save();
+
+        res.status(200).json({ message: "Client removed successfully from both coach and user records" });
+    } catch (error) {
+        res.status(500).json({ message: "Error removing client", error: error.message });
+    }
+});
+
 // Add new workout routes
 router.post('/:coachId/workouts', addWorkout); // Add a workout
 router.put('/:coachId/workouts/:workoutId', updateWorkout); // Update a workout
