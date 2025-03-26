@@ -77,4 +77,38 @@ const rejectCoach = async (req, res) => {
       }
 }
 
-module.exports = {getPendingCoaches, approveCoach, rejectCoach , loginAdmin}
+// Fetch all approved coaches
+const getApprovedCoaches = async (req, res) => {
+    try {
+      const approvedCoaches = await Coach.find({ isApproved: true }).select(
+        "name email specialization experience bio"
+      );
+  
+      res.status(200).json(approvedCoaches);
+    } catch (error) {
+      console.error("Error fetching approved coaches:", error);
+      res.status(500).json({ message: "Error fetching approved coaches" });
+    }
+  };
+
+// Deactivate a coach
+const deactivateCoach = async (req, res) => {
+    try {
+      const { coachId } = req.params;
+  
+      const coach = await Coach.findById(coachId);
+      if (!coach) {
+        return res.status(404).json({ message: "Coach not found" });
+      }
+  
+      coach.isApproved = false; // Set isApproved to false
+      await coach.save();
+  
+      res.status(200).json({ message: "Coach deactivated successfully" });
+    } catch (error) {
+      console.error("Error deactivating coach:", error);
+      res.status(500).json({ message: "Error deactivating coach", error: error.message });
+    }
+  };
+
+module.exports = {getPendingCoaches, approveCoach, rejectCoach , loginAdmin, getApprovedCoaches, deactivateCoach}

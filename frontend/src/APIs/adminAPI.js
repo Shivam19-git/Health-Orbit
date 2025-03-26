@@ -36,4 +36,44 @@ const rejectCoach = async (coachId)=>{
     return response.data;
 }
 
-export {loginAdmin, getPendingCoaches, approveCoach, rejectCoach, setAuthToken};
+// Fetch all approved coaches
+export const fetchApprovedCoaches = async () => {
+  try {
+    const token = localStorage.getItem("token"); // Use authToken for admin-related actions
+    if (!token) {
+      throw new Error("No token found. Please log in again.");
+    }
+
+    const response = await axios.get(`${API_URL}/admin/approved-coaches`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data; // Return the list of approved coaches
+  } catch (error) {
+    console.error("Error fetching approved coaches:", error);
+    throw error;
+  }
+};
+
+// Deactivate a coach
+const deactivateCoach = async (coachId) => {
+  try {
+    const token = localStorage.getItem("token"); // Use authToken for admin-related actions
+    if (!token) {
+      throw new Error("No token found. Please log in again.");
+    }
+
+    const response = await axios.put(`${API_URL}/admin/deactivate-coach/${coachId}`, {}, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data; // Return the response
+  } catch (error) {
+    console.error("Error deactivating coach:", error);
+    throw error;
+  }
+};
+
+export {loginAdmin, getPendingCoaches, approveCoach, rejectCoach, setAuthToken, deactivateCoach};
